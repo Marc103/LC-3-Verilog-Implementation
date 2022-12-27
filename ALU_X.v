@@ -14,10 +14,16 @@ module ALU(input [1:0] ALUK,
                 Result = A & B;
             2'b10:   // NOT
                 Result = ~A;
-            default: // PASSA
+            2'b11: // PASSA
                 Result = A;
             endcase
         end
 
     assign OUT = Result;
+endmodule
+
+module ADDRMUX_ADDER(input [15:0] ADDR1MUX_OUT,
+                     input [15:0] ADDR2MUX_OUT,
+                     output [15:0] OUT);
+    assign OUT = ADDR1MUX_OUT + ADDR2MUX_OUT;
 endmodule
