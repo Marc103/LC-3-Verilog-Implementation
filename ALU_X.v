@@ -27,3 +27,8 @@ module ADDRMUX_ADDER(input [15:0] ADDR1MUX_OUT,
                      output [15:0] OUT);
     assign OUT = ADDR1MUX_OUT + ADDR2MUX_OUT;
 endmodule
+
+module PC_INCREMENT(input [15:0] PC,
+                    output [15:0] OUT);
+    assign OUT = PC + 1;
+endmodule 
