@@ -12,4 +12,10 @@ the verilog onto an FPGA and have a program (written in LC-3 assembly) display
 
 Also i learnt a lot of FPGA stuff from "https://nandland.com/" by Russel Merrick.
 
+-- Update 01/01/2023 --
+ - To simplify this project, there will be no ACV or interrupts, just branching for looping
+ - the character to output will be a hardcoded opcode 
+ so the functioning of this implementation will be only output (of a single char at a time)
+ and the input (implicity) will be the program that the memory is initialized with (no input)
+
 
