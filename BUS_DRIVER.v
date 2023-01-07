@@ -36,4 +36,4 @@ module BUS_DRIVER(input [1:0] BUS_SEL,
 
     assign BUS = Result;
 
-...
+endmodule
