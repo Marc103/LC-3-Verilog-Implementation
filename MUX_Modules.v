@@ -89,16 +89,42 @@ module PCMUX(input [1:0] PCMUX_SEL,
     always@(*)
         begin
             case(PCMUX_SEL)
-            1'b00:
+            2'b00:
                 Result = BUS;
-            1'b01:
+            2'b01:
                 Result = ADDRMUX_ADDER_OUT;
-            1'b10:
+            2'b10:
                 Result = PC_INCREMENTED;
-            1'b11:
+            2'b11:
                 Result = 16'b0000000000000000;
             endcase
         end
 
     assign OUT = Result;
 endmodule
+
+module INMUX(input [1:0] INMUX_SEL,
+             input [15:0] KBDR_OUT,
+             input [15:0] KBSR_OUT,
+             input [15:0] DSR_OUT,
+             input [15:0] MEM_OUT,
+             output [15:0] OUT);
+    reg [15:0] Result;
+
+    always@(*)
+        begin
+            case(INMUX_SEL)
+            2'b00:
+                Result = KBDR_OUT;
+            2'b01:
+                Result = KBSR_OUT;
+            2'b10:
+                Result = DSR_OUT;
+            2'b11:
+                Result = MEM_OUT;
+            endcase
+        end
+
+    assign OUT = Result;
+endmodule
+

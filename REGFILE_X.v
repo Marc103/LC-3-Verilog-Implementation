@@ -94,3 +94,80 @@ module REGFILE(input i_Clk,
     assign SR2_OUT = Result_SR2;
     
 endmodule
+
+module PC(input i_Clk,
+          input LD_PC,
+          input [15:0] PCMUX_OUT,
+          output [15:0] OUT);
+
+    reg [15:0] PC = 0;
+
+    always @(negedge i_Clk)
+        begin
+            if(LD_PC)
+                begin
+                    PC <= PCMUX_OUT;
+                end
+        end
+    
+    assign OUT = PC;
+endmodule
+
+module IR(input i_Clk,
+          input LD_IR,
+          input [15:0] BUS,
+          output [15:0] OUT);
+    
+    reg [15:0] IR = 0;
+
+    always @(negedge i_Clk)
+        begin
+            if(LD_IR)
+                begin
+                    IR <= BUS;
+                end
+        end
+    
+    assign OUT = IR;
+endmodule
+
+module MAR(input i_Clk,
+           input LD_MAR,
+           input [15:0] BUS,
+           output [15:0] OUT);
+
+    reg [15:0] MAR = 0;
+
+    always @(negedge i_Clk);
+        begin
+            if(LD_MAR)
+                begin
+                    MAR <= BUS;
+                end
+        end
+    
+    assign OUT = MAR;
+endmodule
+
+module MDR(input i_Clk,
+           input LD_MDR,
+           input [15:0] MIOMUX_OUT,
+           output [15:0] OUT);
+
+    reg [15:0] MDR = 0;
+
+    always @(negedge i_Clk);
+        begin
+            if(LD_MDR)
+                begin
+                    MDR <= MIOMUX_OUT;
+                end
+        end
+    
+    assign OUT = MDR;
+endmodule
+
+
+
+
+
