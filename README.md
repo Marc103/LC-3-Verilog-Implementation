@@ -18,4 +18,7 @@ Also i learnt a lot of FPGA stuff from "https://nandland.com/" by Russel Merrick
  so the functioning of this implementation will be only output (of a single char at a time)
  and the input (implicity) will be the program that the memory is initialized with (no input)
 
+-- Update 07/01/2023 --
+ - Nevermind about hardcoding output, definitely doable 
+ - actually everything is looking quite feasible
 
