@@ -8,9 +8,9 @@ module SR2MUX(input IR_5,
         begin
             case (IR_5)
             1'b0: 
-                Result = IR_SEXT_4_0;
+                Result <= IR_SEXT_4_0;
             1'b1:
-                Result = SR2OUT; 
+                Result <= SR2OUT; 
             endcase
         end
 
@@ -27,9 +27,9 @@ module ADDR1MUX(input ADDR1MUX_SEL,
         begin
             case(ADDR1MUX_SEL)
             1'b0:
-                Result = PC;
+                Result <= PC;
             1'b1:
-                Result = SR1OUT;
+                Result <= SR1OUT;
             endcase
         end
 
@@ -47,13 +47,13 @@ module ADDR2MUX(input [1:0] ADDR2MUX_SEL,
         begin
             case(ADDR2MUX_SEL)
             2'b00:
-                Result = IR_SEXT_10_0;
+                Result <= IR_SEXT_10_0;
             2'b01:
-                Result = IR_SEXT_8_0;
+                Result <= IR_SEXT_8_0;
             2'b10:
-                Result = IR_SEXT_5_0;
+                Result <= IR_SEXT_5_0;
             2'b11:
-                Result = 16'b0000000000000000;
+                Result <= 16'b0000000000000000;
             endcase 
         end
 
@@ -70,9 +70,9 @@ module MARMUX(input MARMUX_SEL,
         begin
             case(MARMUX_SEL)
             1'b0:
-                Result = IR_ZEXT_7_0;
+                Result <= IR_ZEXT_7_0;
             1'b1:
-                Result = ADDRMUX_ADDER_OUT;
+                Result <= ADDRMUX_ADDER_OUT;
             endcase
         end
 
@@ -90,13 +90,13 @@ module PCMUX(input [1:0] PCMUX_SEL,
         begin
             case(PCMUX_SEL)
             2'b00:
-                Result = BUS;
+                Result <= BUS;
             2'b01:
-                Result = ADDRMUX_ADDER_OUT;
+                Result <= ADDRMUX_ADDER_OUT;
             2'b10:
-                Result = PC_INCREMENTED;
+                Result <= PC_INCREMENTED;
             2'b11:
-                Result = 16'b0000000000000000;
+                Result <= 16'b0000000000000000;
             endcase
         end
 
@@ -115,16 +115,35 @@ module INMUX(input [1:0] INMUX_SEL,
         begin
             case(INMUX_SEL)
             2'b00:
-                Result = KBDR_OUT;
+                Result <= KBDR_OUT;
             2'b01:
-                Result = KBSR_OUT;
+                Result <= KBSR_OUT;
             2'b10:
-                Result = DSR_OUT;
+                Result <= DSR_OUT;
             2'b11:
-                Result = MEM_OUT;
+                Result <= MEM_OUT;
             endcase
         end
 
+    assign OUT = Result;
+endmodule
+
+module MIOMUX(input MIO_EN,
+              input [15:0] INMUX_OUT,
+              input [15:0] BUS,
+              output [15:0] OUT);
+    reg [15:0] Result;
+
+    always@(*)
+        begin
+            case(MIO_EN)
+            1'b0:
+                Result <= INMUX_OUT;
+            1'b11:
+                Result <= BUS;
+            endcase
+        end
+    
     assign OUT = Result;
 endmodule
 

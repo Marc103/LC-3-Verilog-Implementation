@@ -49,21 +49,21 @@ module REGFILE(input i_Clk,
         begin
             case (SR1_SEL)
             3'b000:
-                Result_SR1 = r0;
+                Result_SR1 <= r0;
             3'b001:
-                Result_SR1 = r1;
+                Result_SR1 <= r1;
             3'b010:
-                Result_SR1 = r2;
+                Result_SR1 <= r2;
             3'b011:
-                Result_SR1 = r3;
+                Result_SR1 <= r3;
             3'b100:
-                Result_SR1 = r4;
+                Result_SR1 <= r4;
             3'b101:
-                Result_SR1 = r5;
+                Result_SR1 <= r5;
             3'b110:
-                Result_SR1 = r6;
+                Result_SR1 <= r6;
             3'b111:
-                Result_SR1 = r7;  
+                Result_SR1 <= r7;  
             endcase
         end
     
@@ -72,21 +72,21 @@ module REGFILE(input i_Clk,
         begin
             case (SR2_SEL)
             3'b000:
-                Result_SR2 = r0;
+                Result_SR2 <= r0;
             3'b001:
-                Result_SR2 = r1;
+                Result_SR2 <= r1;
             3'b010:
-                Result_SR2 = r2;
+                Result_SR2 <= r2;
             3'b011:
-                Result_SR2 = r3;
+                Result_SR2 <= r3;
             3'b100:
-                Result_SR2 = r4;
+                Result_SR2 <= r4;
             3'b101:
-                Result_SR2 = r5;
+                Result_SR2 <= r5;
             3'b110:
-                Result_SR2 = r6;
+                Result_SR2 <= r6;
             3'b111:
-                Result_SR2 = r7;  
+                Result_SR2 <= r7;  
             endcase
         end
     

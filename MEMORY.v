@@ -11,7 +11,7 @@ module MEMORY(input i_Clk,
     // so lets use a quarter of it
 
     reg [15:0] ram [28800];
-    reg [15:0] tmp;
+    reg [15:0] tmp = 0;
 
     // we should also include the .mem init
     // somewhere here so that we can load our program
@@ -34,7 +34,7 @@ module MEMORY(input i_Clk,
                 end
         end
 
-    assign OUT = ram[MAR_OUT];
+    assign OUT = tmp;
 endmodule
 
         

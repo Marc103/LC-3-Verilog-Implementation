@@ -24,13 +24,13 @@ module BUS_DRIVER(input [1:0] BUS_SEL,
         begin
             case (BUS_SEL)
             2'b00:  // GateMARMUX
-                Result = MARMUX_OUT;
+                Result <= MARMUX_OUT;
             2'b01:  // GatePC
-                Result = PC_OUT;
+                Result <= PC_OUT;
             2'b10:  // GateALU
-                Result = ALU_OUT;
+                Result <= ALU_OUT;
             2'b11:  // GateMDR
-                Result = MDR_OUT;
+                Result <= MDR_OUT;
             endcase
         end
 
