@@ -9,7 +9,7 @@ module NZP(input i_Clk,
     reg Z;
     reg P;
 
-    always @(negedge i_Clk) 
+    always @(posedge i_Clk) 
         begin
             if (!LD_CC) // if LD_CC is 0, keep nzp regs updated
                 begin

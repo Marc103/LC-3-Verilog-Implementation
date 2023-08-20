@@ -1,25 +1,21 @@
 module ALU(input [1:0] ALUK,
            input [15:0] A,
            input [15:0] B,
-           output [15:0] OUT);
-
-    reg [15:0] Result;
+           output reg [15:0] OUT);
 
     always@(*)
         begin
             case (ALUK)
             2'b00:   // ADD
-                Result = A + B;
+                OUT = A + B;
             2'b01:   // AND
-                Result = A & B;
+                OUT = A & B;
             2'b10:   // NOT
-                Result = ~A;
+                OUT = ~A;
             2'b11: // PASSA
-                Result = A;
+                OUT = A;
             endcase
         end
-
-    assign OUT = Result;
 endmodule
 
 module ADDRMUX_ADDER(input [15:0] ADDR1MUX_OUT,
@@ -29,6 +25,6 @@ module ADDRMUX_ADDER(input [15:0] ADDR1MUX_OUT,
 endmodule
 
 module PC_INCREMENT(input [15:0] PC_OUT,
-                    output [15:0] OUT);
-    assign OUT = PC + 1;
+                    output [15:0] PC_OUT_INC);
+    assign PC_OUT_INC = PC_OUT + 1;
 endmodule 

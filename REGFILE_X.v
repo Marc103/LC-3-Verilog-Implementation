@@ -98,19 +98,15 @@ endmodule
 module PC(input i_Clk,
           input LD_PC,
           input [15:0] PCMUX_OUT,
-          output [15:0] OUT);
+          output reg [15:0] OUT);
 
-    reg [15:0] PC = 0;
-
-    always @(negedge i_Clk)
+    always @(posedge i_Clk)
         begin
             if(LD_PC)
                 begin
                     PC <= PCMUX_OUT;
                 end
         end
-    
-    assign OUT = PC;
 endmodule
 
 module IR(input i_Clk,
