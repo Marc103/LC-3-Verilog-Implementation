@@ -1,11 +1,12 @@
 module REGFILE(input i_Clk,
-               input [15:0] BUS,
                input [2:0] DR,
                input LD_REG,
                input [2:0] SR1_SEL,
                input [2:0] SR2_SEL,
-               output [15:0] SR1_OUT
-               output [15:0] SR2_OUT)
+               input [15:0] BUS_OUT,
+               output reg [15:0] SR1_OUT,
+               output reg [15:0] SR2_OUT);
+
     // GP registers
     reg [15:0] r0;
     reg [15:0] r1;
@@ -15,9 +16,6 @@ module REGFILE(input i_Clk,
     reg [15:0] r5;
     reg [15:0] r6;
     reg [15:0] r7;
-    
-    reg [15:0] Result_SR1;
-    reg [15:0] Result_SR2;
 
     // LD_REG 
     always @(posedge i_Clk)
@@ -26,21 +24,22 @@ module REGFILE(input i_Clk,
                 begin
                     case (DR)
                     3'b000:
-                        r0 <= BUS;
+                        r0 <= BUS_OUT;
                     3'b001:
-                        r1 <= BUS;
+                        r1 <= BUS_OUT;
                     3'b010:
-                        r2 <= BUS;
+                        r2 <= BUS_OUT;
                     3'b011:
-                        r3 <= BUS;
+                        r3 <= BUS_OUT;
                     3'b100:
-                        r4 <= BUS;
+                        r4 <= BUS_OUT;
                     3'b101:
-                        r5 <= BUS;
+                        r5 <= BUS_OUT;
                     3'b110:
-                        r6 <= BUS;
+                        r6 <= BUS_OUT;
                     3'b111:
-                        r7 <= BUS;
+                        r7 <= BUS_OUT;
+                    endcase
                 end
         end
 
@@ -49,21 +48,21 @@ module REGFILE(input i_Clk,
         begin
             case (SR1_SEL)
             3'b000:
-                Result_SR1 <= r0;
+                SR1_OUT <= r0;
             3'b001:
-                Result_SR1 <= r1;
+                SR1_OUT <= r1;
             3'b010:
-                Result_SR1 <= r2;
+                SR1_OUT <= r2;
             3'b011:
-                Result_SR1 <= r3;
+                SR1_OUT <= r3;
             3'b100:
-                Result_SR1 <= r4;
+                SR1_OUT <= r4;
             3'b101:
-                Result_SR1 <= r5;
+                SR1_OUT <= r5;
             3'b110:
-                Result_SR1 <= r6;
+                SR1_OUT <= r6;
             3'b111:
-                Result_SR1 <= r7;  
+                SR1_OUT <= r7;  
             endcase
         end
     
@@ -72,27 +71,23 @@ module REGFILE(input i_Clk,
         begin
             case (SR2_SEL)
             3'b000:
-                Result_SR2 <= r0;
+                SR2_OUT <= r0;
             3'b001:
-                Result_SR2 <= r1;
+                SR2_OUT <= r1;
             3'b010:
-                Result_SR2 <= r2;
+                SR2_OUT <= r2;
             3'b011:
-                Result_SR2 <= r3;
+                SR2_OUT <= r3;
             3'b100:
-                Result_SR2 <= r4;
+                SR2_OUT <= r4;
             3'b101:
-                Result_SR2 <= r5;
+                SR2_OUT <= r5;
             3'b110:
-                Result_SR2 <= r6;
+                SR2_OUT <= r6;
             3'b111:
-                Result_SR2 <= r7;  
+                SR2_OUT <= r7;  
             endcase
         end
-    
-    assign SR1_OUT = Result_SR1;
-    assign SR2_OUT = Result_SR2;
-    
 endmodule
 
 module PC(input i_Clk,
@@ -102,65 +97,102 @@ module PC(input i_Clk,
 
     always @(posedge i_Clk)
         begin
-            if(LD_PC)
-                begin
-                    PC <= PCMUX_OUT;
-                end
+            if(LD_PC) OUT <= PCMUX_OUT;   
         end
 endmodule
 
 module IR(input i_Clk,
           input LD_IR,
           input [15:0] BUS,
-          output [15:0] OUT);
-    
-    reg [15:0] IR = 0;
+          output reg [15:0] OUT);
 
-    always @(negedge i_Clk)
+
+    always @(posedge i_Clk)
         begin
-            if(LD_IR)
-                begin
-                    IR <= BUS;
-                end
+            if(LD_IR) OUT <= BUS;
         end
-    
-    assign OUT = IR;
 endmodule
 
 module MAR(input i_Clk,
            input LD_MAR,
-           input [15:0] BUS,
-           output [15:0] OUT);
+           input [15:0] BUS_OUT,
+           output reg [15:0] OUT);
 
-    reg [15:0] MAR = 0;
-
-    always @(negedge i_Clk);
+    always @(posedge i_Clk)
         begin
-            if(LD_MAR)
-                begin
-                    MAR <= BUS;
-                end
+            if(LD_MAR) OUT <= BUS_OUT;
         end
-    
-    assign OUT = MAR;
 endmodule
 
 module MDR(input i_Clk,
            input LD_MDR,
            input [15:0] MIOMUX_OUT,
-           output [15:0] OUT);
+           output reg [15:0] OUT);
 
-    reg [15:0] MDR = 0;
-
-    always @(negedge i_Clk);
+    always @(posedge i_Clk)
         begin
-            if(LD_MDR)
+            if(LD_MDR) OUT <= MIOMUX_OUT;
+        end
+endmodule
+// For SRs basic flow will be:
+// 0 - No data being requested/outputted (nothing to be done) <Host signal>
+// 1 - Awaiting Data in XX DR                                 <Host signal> now input/output device acts
+// 2 - Data loaded in/out XX DR from input/output device      <Input device signal> after input/output device is done
+// The address control unit 
+
+module KBDR(input i_Clk,
+            input [15:0] INPUT_KBDR,
+            output reg [15:0] OUT);
+
+    always @(posedge i_Clk)
+        begin
+            OUT <= INPUT_KBDR;
+        end
+endmodule
+
+module KBSR(input i_Clk,
+            input LD_KBSR,
+            input [15:0] INPUT_KBSR,
+            input [15:0] MAR_OUT,
+            output reg [15:0] OUT);
+
+    always @(posedge i_Clk)
+        begin
+            if(LD_KBSR) OUT <= MAR_OUT;
+            if(OUT == 16'h0001)
                 begin
-                    MDR <= MIOMUX_OUT;
+                    wait(INPUT_KBSR == 16'h0002)
+                    OUT = INPUT_KBSR;
                 end
         end
-    
-    assign OUT = MDR;
+endmodule
+
+module DDR(input i_Clk,
+           input LD_DDR,
+           input [15:0] MAR_OUT,
+           output reg [15:0] OUT);
+
+    always @(posedge i_Clk)
+        begin
+            if(LD_DDR) OUT <= MAR_OUT;
+        end
+endmodule
+
+module DSR(input i_Clk,
+           input LD_DSR,
+           input [15:0] OUTPUT_DSR,
+           input [15:0] MAR_OUT,
+           output reg [15:0] OUT);
+
+    always @(posedge i_Clk)
+        begin
+            if(LD_DSR) OUT <= MAR_OUT;
+            if(OUT == 16'h0001)
+                begin
+                    wait(OUTPUT_DSR == 16'h0002)
+                    OUT = OUTPUT_DSR;
+                end
+        end
 endmodule
 
 

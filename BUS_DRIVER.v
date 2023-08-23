@@ -8,7 +8,6 @@ For now we will be dealing with the following gates
  
  The combinational logic will determine the signals,
  the sequential part will 'do things' until the next state is determined 
- When reading from the bus, how can we control when it is done?
  
  I think we can deal with cycle accurate instructions later.
 
@@ -24,13 +23,13 @@ module BUS_DRIVER(input i_Clk,
                   input [15:0] PC_OUT,
                   input [15:0] ALU_OUT,
                   input [15:0] MDR_OUT,
-                  output reg [15:0] BUS);
+                  output reg [15:0] BUS_OUT);
 
     always@(posedge i_Clk)
         begin
-            if(GateMARMUX)   BUS <= MARMUX_OUT;
-            else if(GateALU) BUS <= ALU_OUT;
-            else if(GateMDR) BUS <= MDR_OUT;
+            if(GateMARMUX)   BUS_OUT <= MARMUX_OUT;
+            else if(GateALU) BUS_OUT <= ALU_OUT;
+            else if(GateMDR) BUS_OUT <= MDR_OUT;
         end
 
 endmodule

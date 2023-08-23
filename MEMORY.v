@@ -4,13 +4,13 @@ module MEMORY(input i_Clk,
               input [15:0] MAR_OUT,
               input [15:0] MDR_OUT,
               output [15:0] OUT,
-              output R);
+              output reg R);
     // Basys 3 has 1,800 Kbits of BRAM
     // this is 1834200 bits in total
     // % 6, gives 115200 16-bit instructions
     // so lets use a quarter of it
 
-    reg [15:0] ram [28800];
+    reg [15:0] ram [28800:0];
     reg [15:0] tmp = 0;
 
     // we should also include the .mem init
@@ -36,6 +36,42 @@ module MEMORY(input i_Clk,
 
     assign OUT = tmp;
 endmodule
+// RW -> 1 means write, 0 means read
+// Memory mapped IO
+// xFE00 -> KBDR
+// xFE01 -> KBSR
+// xFE02 -> DDR
+// xFE03 -> DSR
+module  ADDR_CTRL(input [15:0] mar_out,
+                  input MIO_EN,
+                  input RW,
+                  output reg MEM_EN,
+                  output reg [1:0] INMUX_SEL,
+                  output reg LD_KBSR,
+                  output reg LD_DSR,
+                  output reg LD_DDR);
 
-        
+    always @(*)
+        begin
+            if(MIO_EN)
+                begin
+                    MEM_EN = 0;
+                    if      (mar_out == 16'hFF00 & !RW) INMUX_SEL = 2'b00;
+                    else if (mar_out == 16'hFF01 & !RW) INMUX_SEL = 2'b01; 
+                    else if (mar_out == 16'hFF03 & !RW) INMUX_SEL = 2'b10;
+                    else if (mar_out == 16'hFF01 &  RW) LD_KBSR = 1; 
+                    else if (mar_out == 16'hFF02 &  RW) LD_DDR = 1;
+                    else if (mar_out == 16'hFF03 &  RW) LD_DSR = 1;
+                end
+
+            else
+                begin
+                    MEM_EN = 1;
+                    INMUX_SEL = 2'b11;
+                end
+
+        end
+
+endmodule  
+
 
