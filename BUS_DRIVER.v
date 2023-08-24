@@ -23,13 +23,14 @@ module BUS_DRIVER(input i_Clk,
                   input [15:0] PC_OUT,
                   input [15:0] ALU_OUT,
                   input [15:0] MDR_OUT,
-                  output reg [15:0] BUS_OUT);
+                  output reg [15:0] BUS_OUT = 16'h0000);
 
     always@(posedge i_Clk)
         begin
             if(GateMARMUX)   BUS_OUT <= MARMUX_OUT;
             else if(GateALU) BUS_OUT <= ALU_OUT;
             else if(GateMDR) BUS_OUT <= MDR_OUT;
+            else if (GatePC) BUS_OUT <= PC_OUT;
         end
 
 endmodule

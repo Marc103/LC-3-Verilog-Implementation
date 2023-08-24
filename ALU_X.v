@@ -1,7 +1,7 @@
 module ALU(input [1:0] ALUK,
            input [15:0] A,
            input [15:0] B,
-           output reg [15:0] OUT);
+           output reg [15:0] OUT = 16'h0000);
 
     always@(*)
         begin

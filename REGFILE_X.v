@@ -4,18 +4,18 @@ module REGFILE(input i_Clk,
                input [2:0] SR1_SEL,
                input [2:0] SR2_SEL,
                input [15:0] BUS_OUT,
-               output reg [15:0] SR1_OUT,
-               output reg [15:0] SR2_OUT);
+               output reg [15:0] SR1_OUT = 16'h0000,
+               output reg [15:0] SR2_OUT = 16'h0000);
 
     // GP registers
-    reg [15:0] r0;
-    reg [15:0] r1;
-    reg [15:0] r2;
-    reg [15:0] r3;
-    reg [15:0] r4;
-    reg [15:0] r5;
-    reg [15:0] r6;
-    reg [15:0] r7;
+    reg [15:0] r0 = 16'h0000;
+    reg [15:0] r1 = 16'h0000;
+    reg [15:0] r2 = 16'h0000;
+    reg [15:0] r3 = 16'h0000;
+    reg [15:0] r4 = 16'h0000;
+    reg [15:0] r5 = 16'h0000;
+    reg [15:0] r6 = 16'h0000;
+    reg [15:0] r7 = 16'h0000;
 
     // LD_REG 
     always @(posedge i_Clk)
@@ -93,8 +93,8 @@ endmodule
 module PC(input i_Clk,
           input LD_PC,
           input [15:0] PCMUX_OUT,
-          output reg [15:0] OUT);
-
+          output reg [15:0] OUT = 16'hDEAD);
+          
     always @(posedge i_Clk)
         begin
             if(LD_PC) OUT <= PCMUX_OUT;   
@@ -104,7 +104,7 @@ endmodule
 module IR(input i_Clk,
           input LD_IR,
           input [15:0] BUS,
-          output reg [15:0] OUT);
+          output reg [15:0] OUT = 16'h0000);
 
 
     always @(posedge i_Clk)
@@ -116,7 +116,7 @@ endmodule
 module MAR(input i_Clk,
            input LD_MAR,
            input [15:0] BUS_OUT,
-           output reg [15:0] OUT);
+           output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin
@@ -127,7 +127,7 @@ endmodule
 module MDR(input i_Clk,
            input LD_MDR,
            input [15:0] MIOMUX_OUT,
-           output reg [15:0] OUT);
+           output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin
@@ -142,7 +142,7 @@ endmodule
 
 module KBDR(input i_Clk,
             input [15:0] INPUT_KBDR,
-            output reg [15:0] OUT);
+            output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin
@@ -154,7 +154,7 @@ module KBSR(input i_Clk,
             input LD_KBSR,
             input [15:0] INPUT_KBSR,
             input [15:0] MAR_OUT,
-            output reg [15:0] OUT);
+            output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin
@@ -170,7 +170,7 @@ endmodule
 module DDR(input i_Clk,
            input LD_DDR,
            input [15:0] MAR_OUT,
-           output reg [15:0] OUT);
+           output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin
@@ -182,7 +182,7 @@ module DSR(input i_Clk,
            input LD_DSR,
            input [15:0] OUTPUT_DSR,
            input [15:0] MAR_OUT,
-           output reg [15:0] OUT);
+           output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin

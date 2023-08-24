@@ -1,19 +1,19 @@
 module DATAPATH(input i_Clk,
-                input SR2MUX_SEL, 
+                input [4:0] SR2MUX_SEL, 
                 input ADDR1MUX_SEL,
-                input ADDR2MUX_SEL,
+                input [1:0] ADDR2MUX_SEL,
                 input MARMUX_SEL,
-                input PCMUX_SEL,
-                input INMUX_SEL,
+                input [1:0] PCMUX_SEL,
+                input [1:0] INMUX_SEL,
                 input MIO_EN,
 
                 input RW,         // ******************
                 input MEM_EN,     // MEMORY SIGNALs
 
-                input DR,         // ******************
+                input [2:0] DR,         // ******************
                 input LD_REG,     // REGFILE SIGNALs
-                input SR1_SEL,    //
-                input SR2_SEL,    //     
+                input [2:0] SR1_SEL,    //
+                input [2:0] SR2_SEL,    //     
 
                 input GateMARMUX, // ******************
                 input GateALU,    // BUS_DRIVER SIGNALs
@@ -53,7 +53,6 @@ module DATAPATH(input i_Clk,
                 wire [15:0] ir_sext_8_0_out,
                 wire [15:0] ir_sext_5_0_out,
                 wire [15:0] ir_sext_4_0_out,
-                wire [15:0] ir_zext_7_0_out,
                 
                 wire [15:0] alu_out,
                 
@@ -68,6 +67,7 @@ module DATAPATH(input i_Clk,
                 wire R_OUT,
                 
                 wire [15:0] input_kbdr,
+                wire [15:0] input_kbsr,
                 wire [15:0] output_dsr,
                 wire [15:0] kbdr_out,
                 wire [15:0] kbsr_out,

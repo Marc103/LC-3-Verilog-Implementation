@@ -5,9 +5,9 @@ module NZP(input i_Clk,
            output Z_OUT,
            output P_OUT);
 
-    reg N;
-    reg Z;
-    reg P;
+    reg N = 0;
+    reg Z = 0;
+    reg P = 0;
 
     always @(posedge i_Clk) 
         begin
