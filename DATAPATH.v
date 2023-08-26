@@ -1,17 +1,16 @@
 module DATAPATH(input i_Clk,
-                input [4:0] SR2MUX_SEL, 
+                input SR2MUX_SEL, 
                 input ADDR1MUX_SEL,
                 input [1:0] ADDR2MUX_SEL,
                 input MARMUX_SEL,
                 input [1:0] PCMUX_SEL,
-                input [1:0] INMUX_SEL,
-                input MIO_EN,
 
-                input RW,         // ******************
-                input MEM_EN,     // MEMORY SIGNALs
+
+                input MIO_EN,         // ******************
+                input RW,             // MEMORY SIGNALs
 
                 input [2:0] DR,         // ******************
-                input LD_REG,     // REGFILE SIGNALs
+                input LD_REG,           // REGFILE SIGNALs
                 input [2:0] SR1_SEL,    //
                 input [2:0] SR2_SEL,    //     
 
@@ -64,14 +63,27 @@ module DATAPATH(input i_Clk,
                 wire [15:0] mdr_out,
                 
                 wire [15:0] mem_out,
-                wire R_OUT,
+                wire R_OUT, // *
+                wire MEM_EN, // *
                 
                 wire [15:0] input_kbdr,
                 wire [15:0] input_kbsr,
                 wire [15:0] output_dsr,
                 wire [15:0] kbdr_out,
                 wire [15:0] kbsr_out,
-                wire [15:0] dsr_out
+                wire [15:0] dsr_out,
+                wire LD_KBSR, // *
+                wire LD_DSR,  // *
+                wire LD_DDR,  // *
+                wire [1:0] INMUX_SEL, // *
+                wire [15:0] debug_r0_out,
+                wire [15:0] debug_r1_out,
+                wire [15:0] debug_r2_out,
+                wire [15:0] debug_r3_out,
+                wire [15:0] debug_r4_out,
+                wire [15:0] debug_r5_out,
+                wire [15:0] debug_r6_out,
+                wire [15:0] debug_r7_out  
                 );
 
 
@@ -102,12 +114,14 @@ module DATAPATH(input i_Clk,
     NZP nzp (i_Clk, LD_CC, bus_out, n_out, z_out, p_out);
     
     MAR mar (i_Clk, LD_MAR, bus_out, mar_out);
-    MDR mdr (i_Clk, LD_MDR, bus_out, mdr_out);
+    MDR mdr (i_Clk, LD_MDR, miomux_out, mdr_out);
     
     MIOMUX miomux (MIO_EN, bus_out, inmux_out, miomux_out);
     INMUX inmux (INMUX_SEL, kbdr_out, kbsr_out, dsr_out, mem_out, inmux_out);
     
-    REGFILE regfile (i_Clk, DR, LD_REG, SR1_SEL, SR2_SEL, bus_out, sr1_out, sr2_out);
+    REGFILE regfile (i_Clk, DR, LD_REG, SR1_SEL, SR2_SEL, bus_out, sr1_out, sr2_out,
+                     debug_r0_out,debug_r1_out,debug_r2_out,debug_r3_out,
+                     debug_r4_out,debug_r5_out,debug_r6_out,debug_r7_out);
     
     MEMORY memory (i_Clk, RW, MEM_EN, mar_out, mdr_out, mem_out, R_OUT);
     

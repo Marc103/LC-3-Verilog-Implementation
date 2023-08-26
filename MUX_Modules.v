@@ -119,9 +119,9 @@ module MIOMUX(input MIO_EN,
         begin
             case(MIO_EN)
             1'b0:
-                OUT = INMUX_OUT;
-            1'b1:
                 OUT = BUS_OUT;
+            1'b1:
+                OUT = INMUX_OUT;
             endcase
         end
 endmodule

@@ -17,8 +17,11 @@ module MEMORY(input i_Clk,
     // somewhere here so that we can load our program
     initial 
         begin
-            ram[0] = 16'hBEEF;
-            ram[1] = 16'hABAB;
+            ram[0] = 16'b0101011001000010; 
+            ram[1] = 16'b1001100001000000;
+            ram[2] = 16'b0001000010101010;
+            ram[3] = 16'b0001101001000010;
+            
         end
 
     always @(posedge i_Clk)
@@ -26,14 +29,13 @@ module MEMORY(input i_Clk,
             if (MEM_EN & RW)
                 begin
                     ram[MAR_OUT] = MDR_OUT;     // purposefully using blocking
-                    R = 1;                      // to ensure R is 1 when done
-                    R = 0;
+                    R = 1;
+                                         // to ensure R is 1 when done
                 end
             if (MEM_EN & !RW)
                 begin
                     tmp = ram[MAR_OUT];
                     R = 1;
-                    R = 0;
                 end
             if (!MEM_EN)
                 begin
@@ -53,30 +55,31 @@ module  ADDR_CTRL(input [15:0] mar_out,
                   input MIO_EN,
                   input RW,
                   output reg MEM_EN,
-                  output reg [1:0] INMUX_SEL,
+                  output reg [1:0] INMUX_SEL = 2'b11,
                   output reg LD_KBSR,
                   output reg LD_DSR,
                   output reg LD_DDR);
 
     always @(*)
         begin
+            MEM_EN = 0;
+            INMUX_SEL = 2'b11;
+            LD_KBSR = 0;
+            LD_DDR = 0;
+            LD_DSR = 0;
+            
             if(MIO_EN)
                 begin
-                    MEM_EN = 0;
                     if      (mar_out == 16'hFF00 & !RW) INMUX_SEL = 2'b00;
                     else if (mar_out == 16'hFF01 & !RW) INMUX_SEL = 2'b01; 
                     else if (mar_out == 16'hFF03 & !RW) INMUX_SEL = 2'b10;
                     else if (mar_out == 16'hFF01 &  RW) LD_KBSR = 1; 
                     else if (mar_out == 16'hFF02 &  RW) LD_DDR = 1;
                     else if (mar_out == 16'hFF03 &  RW) LD_DSR = 1;
+                    else MEM_EN = 1;     
                 end
-
             else
-                begin
-                    MEM_EN = 1;
-                    INMUX_SEL = 2'b11;
-                end
-
+                    MEM_EN = 0;
         end
 
 endmodule  

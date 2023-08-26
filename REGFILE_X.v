@@ -5,18 +5,35 @@ module REGFILE(input i_Clk,
                input [2:0] SR2_SEL,
                input [15:0] BUS_OUT,
                output reg [15:0] SR1_OUT = 16'h0000,
-               output reg [15:0] SR2_OUT = 16'h0000);
+               output reg [15:0] SR2_OUT = 16'h0000,
+               output [15:0] debug_r0,
+               output [15:0] debug_r1,
+               output [15:0] debug_r2,
+               output [15:0] debug_r3,
+               output [15:0] debug_r4,
+               output [15:0] debug_r5,
+               output [15:0] debug_r6,
+               output [15:0] debug_r7);
 
     // GP registers
     reg [15:0] r0 = 16'h0000;
-    reg [15:0] r1 = 16'h0000;
-    reg [15:0] r2 = 16'h0000;
+    reg [15:0] r1 = 16'h0005;
+    reg [15:0] r2 = 16'h0003;
     reg [15:0] r3 = 16'h0000;
     reg [15:0] r4 = 16'h0000;
     reg [15:0] r5 = 16'h0000;
     reg [15:0] r6 = 16'h0000;
     reg [15:0] r7 = 16'h0000;
-
+    
+    assign debug_r0 = r0;
+    assign debug_r1 = r1;
+    assign debug_r2 = r2;
+    assign debug_r3 = r3;
+    assign debug_r4 = r4;
+    assign debug_r5 = r5;
+    assign debug_r6 = r6;
+    assign debug_r7 = r7;
+    
     // LD_REG 
     always @(posedge i_Clk)
         begin
@@ -93,7 +110,7 @@ endmodule
 module PC(input i_Clk,
           input LD_PC,
           input [15:0] PCMUX_OUT,
-          output reg [15:0] OUT = 16'hDEAD);
+          output reg [15:0] OUT = 16'h0000);
           
     always @(posedge i_Clk)
         begin
