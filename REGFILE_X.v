@@ -18,7 +18,7 @@ module REGFILE(input i_Clk,
     // GP registers
     reg [15:0] r0 = 16'h0000;
     reg [15:0] r1 = 16'h0005;
-    reg [15:0] r2 = 16'h0003;
+    reg [15:0] r2 = 16'h000D;
     reg [15:0] r3 = 16'h0000;
     reg [15:0] r4 = 16'h0000;
     reg [15:0] r5 = 16'h0000;
@@ -110,7 +110,7 @@ endmodule
 module PC(input i_Clk,
           input LD_PC,
           input [15:0] PCMUX_OUT,
-          output reg [15:0] OUT = 16'h0000);
+          output reg [15:0] OUT = 16'h0004);
           
     always @(posedge i_Clk)
         begin
