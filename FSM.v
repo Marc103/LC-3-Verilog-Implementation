@@ -90,18 +90,21 @@ module FSM(input i_Clk,
                 LD_PC <= 0;
                 PCMUX_SEL <= 0;
                 @(posedge i_Clk);
-                NEXT_STATE = 28;
+                NEXT_STATE = 33;
                 end
                 
             33:
                 begin
-                // 33 (skipped) -----------------------------------------------------------------
+                // 33  -------------------------------------------------------------------------
+                // [ACV]
+                NEXT_STATE = 28;
+                @(posedge i_Clk);
                 end
                 
             28:
                 begin
                 // 28 (28) ----------------------------------------------------------------------
-                // MDR <- M
+                // MDR <- M[MAR]
                 RW         <= 0;
                 MIO_EN     <= 1;
                 @(posedge i_Clk)
@@ -171,7 +174,7 @@ module FSM(input i_Clk,
                 @(posedge i_Clk);
                 end
                 
-            1: // ADD s
+            1: // ADD 
                 begin
                 // 01 ---------------------------------------------------------------------------------
                 // DR <- SR1 + OP2* (bit[5] determines if an immediate value is used, 1 means immediate)
@@ -216,7 +219,8 @@ module FSM(input i_Clk,
                 @(posedge i_Clk);
                 NEXT_STATE <= 18;
                 end
-            9:
+                
+            9: // NOT
                 begin
                 // 01 ---------------------------------------------------------------------------------
                 // DR <- SR1 & OP2* (bit[5] determines if an immediate value is used, 1 means immediate)
@@ -235,6 +239,99 @@ module FSM(input i_Clk,
                 @(posedge i_Clk);
                 NEXT_STATE <= 18;
                 end
+            
+            14: // LEA
+                begin
+                // DR <- PC + offset9
+                GateMARMUX = 1;
+                MARMUX_SEL = 1;
+                ADDR1MUX_SEL = 0;
+                ADDR2MUX_SEL = 2'b01;
+                DR <= ir_out[11:9];
+                @(posedge i_Clk)
+                GateMARMUX <= 0;
+                LD_REG <= 1;
+                @(posedge i_Clk)
+                LD_REG <= 0;
+                @(posedge i_Clk)
+                NEXT_STATE <= 18;
+                end
+              
+            2: // LD
+                begin
+                // MAR <- PC + SEXT[offset9]
+                // set ACV
+                GateMARMUX = 1;
+                MARMUX_SEL = 1;
+                ADDR1MUX_SEL = 0;
+                ADDR2MUX_SEL = 2'b01;
+                @(posedge i_Clk)
+                GateMARMUX = 0;
+                LD_MAR = 1;
+                @(posedge i_Clk)
+                LD_MAR = 0;
+                @(posedge i_Clk);
+                NEXT_STATE <= 35;
+                end
+            
+            6:  // LDR
+                // MAR <= BaseR + offset9
+                // set ACV
+                begin
+                GateMARMUX <= 1;
+                MARMUX_SEL <= 1;
+                ADDR1MUX_SEL <= 1;
+                ADDR2MUX_SEL <= 2'b10;
+                SR1_SEL <= ir_out[8:6];
+                @(posedge i_Clk);
+                GateMARMUX <= 0;
+                LD_MAR <= 1;
+                @(posedge i_Clk);
+                LD_MAR <= 0;
+                @(posedge i_Clk);
+                NEXT_STATE <= 35;
+                end
+                
+            35:
+                // [ACV]
+                begin
+                @(posedge i_Clk)
+                NEXT_STATE <= 25;
+                end
+                
+            25:
+                // MDR <- M[MAR]
+                begin
+                RW         <= 0;
+                MIO_EN     <= 1;
+                @(posedge i_Clk)
+                wait(R_OUT)
+                @(posedge i_Clk)
+                LD_MDR <= 1;
+                @(posedge i_Clk)
+                LD_MDR <= 0;
+                @(posedge i_Clk)
+                MIO_EN <= 0;
+                NEXT_STATE <= 27;
+                end
+            
+            27:
+                // DR <= MDR
+                // set CC
+                begin
+                GateMDR <= 1;
+                DR <= ir_out[11:9];
+                @(posedge i_Clk)
+                GateMDR <= 0;
+                LD_REG <= 1;
+                LD_CC <= 1;
+                @(posedge i_Clk)
+                LD_REG <= 0;
+                LD_CC <= 0;
+                @(posedge i_Clk)
+                NEXT_STATE <= 18;
+                end
+             
             
             default:
             ;

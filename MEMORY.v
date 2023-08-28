@@ -17,10 +17,13 @@ module MEMORY(input i_Clk,
     // somewhere here so that we can load our program
     initial 
         begin
-            ram[0] = 16'b0101011001000010; 
+            ram[0] = 16'b0101011001000010; //5642
             ram[1] = 16'b1001100001000000;
-            ram[2] = 16'b0001000010101010;
-            ram[3] = 16'b0001101001000010;
+            ram[2] = 16'b0010000000000111;
+            ram[3] = 16'b0010010111111100;
+            ram[4] = 16'b0110101001111011;
+            ram[5] = 16'b1110111011110010;
+            ram[10] = 16'hBEEF;
             
         end
 
