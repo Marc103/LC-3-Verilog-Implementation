@@ -16,8 +16,8 @@ module REGFILE(input i_Clk,
                output [15:0] debug_r7);
 
     // GP registers
-    reg [15:0] r0 = 16'h0000;
-    reg [15:0] r1 = 16'h0005;
+    reg [15:0] r0 = 16'hfff4;
+    reg [15:0] r1 = 16'hfff5;
     reg [15:0] r2 = 16'h000D;
     reg [15:0] r3 = 16'h0000;
     reg [15:0] r4 = 16'h0000;

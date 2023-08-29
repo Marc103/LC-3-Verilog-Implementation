@@ -188,12 +188,13 @@ module FSM(input i_Clk,
                 GateALU    <= 1;
                 @(posedge i_Clk)
                 GateALU    <= 0;
-                LD_CC      <= 1;
                 LD_REG     <= 1;
                 DR         <= ir_out[11:9];
                 @(posedge i_Clk)
-                LD_CC      <= 0;
+                LD_CC      <= 1;
                 LD_REG     <= 0;
+                @(posedge i_Clk);
+                LD_CC <= 0;
                 @(posedge i_Clk);
                 NEXT_STATE <= 18;
                 end
@@ -210,13 +211,14 @@ module FSM(input i_Clk,
                 GateALU    <= 1;
                 @(posedge i_Clk)
                 GateALU    <= 0;
-                LD_CC      <= 1;
                 LD_REG     <= 1;
                 DR         <= ir_out[11:9];
                 @(posedge i_Clk)
-                LD_CC      <= 0;
+                LD_CC      <= 1;
                 LD_REG     <= 0;
-                @(posedge i_Clk);
+                @(posedge i_Clk)
+                LD_CC <= 0;
+                @(posedge i_Clk)
                 NEXT_STATE <= 18;
                 end
                 
@@ -229,13 +231,14 @@ module FSM(input i_Clk,
                 GateALU    <= 1;
                 @(posedge i_Clk)
                 GateALU    <= 0;
-                LD_CC      <= 1;
                 LD_REG     <= 1;
                 DR         <= ir_out[11:9];
                 @(posedge i_Clk)
-                LD_CC      <= 0;
+                LD_CC      <= 1;
                 LD_REG     <= 0;
                 @(posedge i_Clk);
+                LD_CC      <= 0;
+                @(posedge i_Clk)
                 NEXT_STATE <= 18;
                 end
             
@@ -343,7 +346,7 @@ module FSM(input i_Clk,
                 NEXT_STATE <= 23;
                 end
                 
-            3:   // ST
+            3: // ST
                 begin
                 // MAR <- PC + SEXT[offset9]
                 // set ACV
@@ -360,6 +363,98 @@ module FSM(input i_Clk,
                 NEXT_STATE <= 23;
                 end
                 
+            4:// JSR
+                begin
+                if(ir_out[11]) NEXT_STATE <= 21;
+                else NEXT_STATE <= 20;
+                end
+                
+            12:// JMP
+                begin
+                // PC <- BaseR
+                SR2_SEL <= ir_out[11:9];
+                SR2MUX_SEL <= 1;
+                ALUK <= 2'b11;
+                GateALU <= 1;
+                @(posedge i_Clk)
+                GateALU <= 0;
+                @(posedge i_Clk)
+                PCMUX_SEL <= 2'b00;
+                LD_PC <= 1;
+                @(posedge i_Clk)
+                LD_PC <= 0;
+                @(posedge i_Clk)
+                NEXT_STATE <= 18;
+                end
+                
+            0: // BR
+                begin
+                if(BEN)NEXT_STATE <= 22;
+                else NEXT_STATE <= 18;
+                @(posedge i_Clk);
+                end
+                
+            22:
+                begin
+                // PC <- PC + offset9
+                PCMUX_SEL <= 2'b01;
+                ADDR1MUX_SEL <= 0;
+                ADDR2MUX_SEL <= 2'b01;
+                LD_PC <= 1;
+                @(posedge i_Clk)
+                LD_PC <= 0;
+                @(posedge i_Clk)
+                NEXT_STATE <= 18;
+                end
+                
+            20:
+                begin
+                // R7 <- PC
+                // PC <- BaseR
+                GatePC <= 1;
+                @(posedge i_Clk)
+                GatePC <= 0;
+                DR <= 3'b111;
+                LD_REG <= 1;
+                @(posedge i_Clk)
+                LD_REG <= 0;
+                @(posedge i_Clk);
+                SR2_SEL <= ir_out[11:9];
+                SR2MUX_SEL <= 1;
+                ALUK <= 2'b11;
+                GateALU <= 1;
+                @(posedge i_Clk)
+                GateALU <= 0;
+                @(posedge i_Clk)
+                PCMUX_SEL <= 2'b00;
+                LD_PC <= 1;
+                @(posedge i_Clk)
+                LD_PC <= 0;
+                @(posedge i_Clk)
+                NEXT_STATE <= 18;
+                end
+            
+            21:
+                begin
+                // R7 <- PC
+                // PC <- PC + offset11
+                GatePC <= 1;
+                @(posedge i_Clk)
+                GatePC <= 0;
+                DR <= 3'b111;
+                LD_REG <= 1;
+                @(posedge i_Clk)
+                LD_REG <= 0;
+                @(posedge i_Clk)
+                LD_PC <= 1;
+                PCMUX_SEL <= 2'b01;
+                ADDR1MUX_SEL <= 0;
+                ADDR2MUX_SEL <= 2'b00; 
+                @(posedge i_Clk)
+                LD_PC <= 0;
+                @(posedge i_Clk)
+                NEXT_STATE = 18;
+                end
             19:
                 // [ACV]
                 begin
@@ -495,9 +590,10 @@ module FSM(input i_Clk,
                 @(posedge i_Clk)
                 GateMDR <= 0;
                 LD_REG <= 1;
-                LD_CC <= 1;
                 @(posedge i_Clk)
                 LD_REG <= 0;
+                LD_CC <= 1;
+                @(posedge i_Clk)
                 LD_CC <= 0;
                 @(posedge i_Clk)
                 NEXT_STATE <= 18;
