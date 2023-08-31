@@ -16,10 +16,10 @@ module REGFILE(input i_Clk,
                output [15:0] debug_r7);
 
     // GP registers
-    reg [15:0] r0 = 16'hfff4;
-    reg [15:0] r1 = 16'hfff5;
-    reg [15:0] r2 = 16'h000D;
-    reg [15:0] r3 = 16'h0000;
+    reg [15:0] r0 = 16'h0058;
+    reg [15:0] r1 = 16'hff00;
+    reg [15:0] r2 = 16'h0001;
+    reg [15:0] r3 = 16'h0002;
     reg [15:0] r4 = 16'h0000;
     reg [15:0] r5 = 16'h0000;
     reg [15:0] r6 = 16'h0000;
@@ -110,7 +110,7 @@ endmodule
 module PC(input i_Clk,
           input LD_PC,
           input [15:0] PCMUX_OUT,
-          output reg [15:0] OUT = 16'h0004);
+          output reg [15:0] OUT = 16'h0000);
           
     always @(posedge i_Clk)
         begin
@@ -158,57 +158,50 @@ endmodule
 // The address control unit 
 
 module KBDR(input i_Clk,
-            input [15:0] INPUT_KBDR,
+            input [15:0] EXT_OUT,
             output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin
-            OUT <= INPUT_KBDR;
+            OUT <= EXT_OUT;
         end
 endmodule
 
 module KBSR(input i_Clk,
             input LD_KBSR,
-            input [15:0] INPUT_KBSR,
-            input [15:0] MAR_OUT,
+            input LD_KBSR_EXT,
+            input [15:0] MDR_OUT,
+            input [15:0] EXT_OUT,
             output reg [15:0] OUT = 16'h0000);
-
     always @(posedge i_Clk)
         begin
-            if(LD_KBSR) OUT <= MAR_OUT;
-            if(OUT == 16'h0001)
-                begin
-                    wait(INPUT_KBSR == 16'h0002)
-                    OUT = INPUT_KBSR;
-                end
+            if(LD_KBSR) OUT <= MDR_OUT;
+            else if(LD_KBSR_EXT) OUT <= EXT_OUT;
         end
 endmodule
 
 module DDR(input i_Clk,
            input LD_DDR,
-           input [15:0] MAR_OUT,
+           input [15:0] MDR_OUT,
            output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin
-            if(LD_DDR) OUT <= MAR_OUT;
+            if(LD_DDR) OUT <= MDR_OUT;
         end
 endmodule
 
 module DSR(input i_Clk,
            input LD_DSR,
-           input [15:0] OUTPUT_DSR,
-           input [15:0] MAR_OUT,
+           input LD_DSR_EXT,
+           input [15:0] MDR_OUT,
+           input [15:0] EXT_OUT,
            output reg [15:0] OUT = 16'h0000);
 
     always @(posedge i_Clk)
         begin
-            if(LD_DSR) OUT <= MAR_OUT;
-            if(OUT == 16'h0001)
-                begin
-                    wait(OUTPUT_DSR == 16'h0002)
-                    OUT = OUTPUT_DSR;
-                end
+            if(LD_DSR) OUT <= MDR_OUT;
+            if(LD_DSR_EXT) OUT <= EXT_OUT;
         end
 endmodule
 

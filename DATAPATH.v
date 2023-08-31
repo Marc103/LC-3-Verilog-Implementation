@@ -26,8 +26,14 @@ module DATAPATH(input i_Clk,
                 input LD_MDR,
                 
                 input [1:0] ALUK,
+                input LD_KBDR_EXT,
+                input LD_KBSR_EXT,
+                input LD_DSR_EXT,
+                input [15:0] kbdr_ext_out,
+                input [15:0] kbsr_ext_out,
+                input [15:0] dsr_ext_out,
 
-                wire [15:0] bus_out,                // shared (one or more)
+                output wire [15:0] bus_out,                // shared (one or more)
                 wire [15:0] pc_out,
                 wire [15:0] pc_out_inc,
                 wire [15:0] ir_out,
@@ -66,16 +72,17 @@ module DATAPATH(input i_Clk,
                 wire R_OUT, // *
                 wire MEM_EN, // *
                 
-                wire [15:0] input_kbdr,
-                wire [15:0] input_kbsr,
-                wire [15:0] output_dsr,
-                wire [15:0] kbdr_out,
-                wire [15:0] kbsr_out,
-                wire [15:0] dsr_out,
+
                 wire LD_KBSR, // *
                 wire LD_DSR,  // *
                 wire LD_DDR,  // *
+                wire [15:0] kbdr_out,
+                wire [15:0] kbsr_out,
+                wire [15:0] ddr_out,
+                wire [15:0] dsr_out,
+                
                 wire [1:0] INMUX_SEL, // *
+                wire R_MMIO, // *
                 wire [15:0] debug_r0_out,
                 wire [15:0] debug_r1_out,
                 wire [15:0] debug_r2_out,
@@ -123,13 +130,13 @@ module DATAPATH(input i_Clk,
                      debug_r0_out,debug_r1_out,debug_r2_out,debug_r3_out,
                      debug_r4_out,debug_r5_out,debug_r6_out,debug_r7_out);
     
-    MEMORY memory (i_Clk, RW, MEM_EN, mar_out, mdr_out, mem_out, R_OUT);
+    MEMORY memory (i_Clk, RW, MEM_EN, mar_out, mdr_out, mem_out, R_OUT, R_MMIO);
     
-    ADDR_CTRL addr_ctrl(mar_out, MIO_EN, RW, MEM_EN, INMUX_SEL, LD_KBSR, LD_DSR, LD_DDR);
-    KBDR kbdr (i_Clk, input_kbdr, kbdr_out);
-    KBSR kbsr (i_Clk, LD_KBSR, input_kbsr, mar_out, kbsr_out);
-    DDR ddr   (i_Clk, LD_DDR, mar_out, dsr_out);
-    DSR dsr   (i_Clk, LD_DSR, output_dsr, mar_out, dsr_out);
+    ADDR_CTRL addr_ctrl(mar_out, MIO_EN, RW, MEM_EN, INMUX_SEL, LD_KBSR, LD_DSR, LD_DDR, R_MMIO);
+    KBDR kbdr (i_Clk, kbdr_ext_out, kbdr_out);
+    KBSR kbsr (i_Clk, LD_KBSR, LD_KBSR_EXT, mdr_out, kbsr_ext_out, kbsr_out);
+    DDR ddr   (i_Clk, LD_DDR, mdr_out, ddr_out);
+    DSR dsr   (i_Clk, LD_DSR, LD_DSR_EXT, mdr_out, dsr_ext_out, dsr_out);
     
     BUS_DRIVER bus_driver (i_Clk, GateMARMUX, GateALU, GateMDR, GatePC, marmux_out, pc_out, alu_out, mdr_out, bus_out);
     

@@ -1,8 +1,8 @@
-`timescale 1ns / 10ps
-
-module TESTBENCH;
-  
-    reg  i_Clk = 0;
+module TOP;
+    input  i_Clk;
+    input  RsRx;
+    output RsTx;
+      
     wire SR2MUX_SEL; 
     wire ADDR1MUX_SEL;
     wire [1:0] ADDR2MUX_SEL;
@@ -98,14 +98,12 @@ module TESTBENCH;
                       debug_r7_out;
                       
           wire [7:0]  CURRENT_STATE_OUT,
-                      NEXT_STATE_OUT,
-                      mini_state_out,
-                      next_mini_state_out;
+                      NEXT_STATE_OUT;
           
     FSM fsm (i_Clk, ir_out, n_out, z_out, p_out, R_OUT,
              SR2MUX_SEL, ADDR1MUX_SEL, ADDR2MUX_SEL, MARMUX_SEL, PCMUX_SEL, MIO_EN,
              RW, DR, LD_REG, SR1_SEL, SR2_SEL, GateMARMUX, GateALU, GateMDR, GatePC, LD_CC,
-             LD_IR, LD_PC, LD_MAR, LD_MDR, ALUK, CURRENT_STATE_OUT, NEXT_STATE_OUT, mini_state_out, next_mini_state_out);
+             LD_IR, LD_PC, LD_MAR, LD_MDR, ALUK, CURRENT_STATE_OUT, NEXT_STATE_OUT);
               
     DATAPATH datapath(i_Clk, SR2MUX_SEL, ADDR1MUX_SEL, ADDR2MUX_SEL, MARMUX_SEL, PCMUX_SEL, MIO_EN,
                       RW, DR, LD_REG, SR1_SEL, SR2_SEL, GateMARMUX, GateALU, GateMDR, GatePC, LD_CC,
@@ -126,16 +124,6 @@ module TESTBENCH;
      .DSR(dsr_out),
      .LD_DSR_EXT(LD_DSR_EXT),
      .DSR_EXT(dsr_ext_out),
-     .o_Tx_Serial(o_Tx_Serial));
-
-    initial 
-        begin
-            i_Clk = 0; 
-            forever 
-                begin
-                #10 i_Clk = ~i_Clk;
-            end 
-        end
+     .o_Tx_Serial(RsTx));
 
 endmodule
-
