@@ -118,15 +118,17 @@ module TESTBENCH;
                       kbdr_out, kbsr_out, ddr_out, dsr_out, INMUX_SEL, R_MMIO,
                       debug_r0_out,debug_r1_out,debug_r2_out,debug_r3_out,debug_r4_out,debug_r5_out,debug_r6_out,debug_r7_out);
 
-    parameter c_CLKS_PER_BIT    = 87;
+    OUTPUT ot(i_Clk, dsr_out, ready, send, dsr_ext_out, LD_DSR_EXT);
     
-    uart_tx #(.CLKS_PER_BIT(c_CLKS_PER_BIT)) utx
-    (.i_Clock(i_Clk),
-     .i_Tx_Byte(ddr_out[7:0]),
-     .DSR(dsr_out),
-     .LD_DSR_EXT(LD_DSR_EXT),
-     .DSR_EXT(dsr_ext_out),
-     .o_Tx_Serial(o_Tx_Serial));
+    wire ready;
+    wire send;
+    
+    uart_tx #(868) utx(.i_Clock(i_Clk),
+                       .i_Tx_DV(send),
+                       .i_Tx_Byte(8'h58),
+                       .o_Tx_Active(),
+                       .o_Tx_Serial(RsTx),
+                       .o_Tx_Done(ready));
 
     initial 
         begin

@@ -48,7 +48,7 @@ module FSM(input i_Clk,
     assign mini_state_out = mini_state;
     assign next_mini_state_out = next_mini_state;
 
-    always@(CURRENT_STATE, mini_state, R_OUT)
+    always@(*)
         begin
             case(CURRENT_STATE)
             100:
@@ -258,7 +258,7 @@ module FSM(input i_Clk,
                         NEXT_STATE = 7;
                     4'b1111: // TRAP
                         NEXT_STATE = 15;
-                    4'b0001: // Reserved 
+                    4'b1101: // Reserved 
                         NEXT_STATE = 18; // just skip
                 endcase  
                 next_mini_state = 0;

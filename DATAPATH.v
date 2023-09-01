@@ -34,63 +34,63 @@ module DATAPATH(input i_Clk,
                 input [15:0] dsr_ext_out,
 
                 output wire [15:0] bus_out,                // shared (one or more)
-                wire [15:0] pc_out,
-                wire [15:0] pc_out_inc,
-                wire [15:0] ir_out,
+                output wire [15:0] pc_out,
+                output wire [15:0] pc_out_inc,
+                output wire [15:0] ir_out,
                 
                 // reg file 
-                wire [15:0] sr1_out,
-                wire [15:0] sr2_out,
+                output wire [15:0] sr1_out,
+                output wire [15:0] sr2_out,
 
                 // muxes
-                wire [15:0] pcmux_out,
-                wire [15:0] marmux_out,
-                wire [15:0] addr1mux_out,
-                wire [15:0] addr2mux_out,
-                wire [15:0] addrmux_adder_out,
-                wire [15:0] sr2mux_out,
-                wire [15:0] miomux_out,
-                wire [15:0] inmux_out,
+                output wire [15:0] pcmux_out,
+                output wire [15:0] marmux_out,
+                output wire [15:0] addr1mux_out,
+                output wire [15:0] addr2mux_out,
+                output wire [15:0] addrmux_adder_out,
+                output wire [15:0] sr2mux_out,
+                output wire [15:0] miomux_out,
+                output wire [15:0] inmux_out,
                 
                 // sign extensions
-                wire [15:0] ir_zext_7_0_out,
-                wire [15:0] ir_sext_10_0_out,       
-                wire [15:0] ir_sext_8_0_out,
-                wire [15:0] ir_sext_5_0_out,
-                wire [15:0] ir_sext_4_0_out,
+                output wire [15:0] ir_zext_7_0_out,
+                output wire [15:0] ir_sext_10_0_out,       
+                output wire [15:0] ir_sext_8_0_out,
+                output wire [15:0] ir_sext_5_0_out,
+                output wire [15:0] ir_sext_4_0_out,
                 
-                wire [15:0] alu_out,
+                output wire [15:0] alu_out,
                 
-                wire n_out,
-                wire p_out,
-                wire z_out,
+                output wire n_out,
+                output wire p_out,
+                output wire z_out,
                 
-                wire [15:0] mar_out,
-                wire [15:0] mdr_out,
+                output wire [15:0] mar_out,
+                output wire [15:0] mdr_out,
                 
-                wire [15:0] mem_out,
-                wire R_OUT, // *
-                wire MEM_EN, // *
+                output wire [15:0] mem_out,
+                output wire R_OUT, // *
+                output wire MEM_EN, // *
                 
 
-                wire LD_KBSR, // *
-                wire LD_DSR,  // *
-                wire LD_DDR,  // *
-                wire [15:0] kbdr_out,
-                wire [15:0] kbsr_out,
-                wire [15:0] ddr_out,
-                wire [15:0] dsr_out,
+                output wire LD_KBSR, // *
+                output wire LD_DSR,  // *
+                output wire LD_DDR,  // *
+                output wire [15:0] kbdr_out,
+                output wire [15:0] kbsr_out,
+                output wire [15:0] ddr_out,
+                output wire [15:0] dsr_out,
                 
-                wire [1:0] INMUX_SEL, // *
-                wire R_MMIO, // *
-                wire [15:0] debug_r0_out,
-                wire [15:0] debug_r1_out,
-                wire [15:0] debug_r2_out,
-                wire [15:0] debug_r3_out,
-                wire [15:0] debug_r4_out,
-                wire [15:0] debug_r5_out,
-                wire [15:0] debug_r6_out,
-                wire [15:0] debug_r7_out  
+                output wire [1:0] INMUX_SEL, // *
+                output wire R_MMIO, // *
+                output wire [15:0] debug_r0_out,
+                output wire [15:0] debug_r1_out,
+                output wire [15:0] debug_r2_out,
+                output wire [15:0] debug_r3_out,
+                output wire [15:0] debug_r4_out,
+                output wire [15:0] debug_r5_out,
+                output wire [15:0] debug_r6_out,
+                output wire [15:0] debug_r7_out  
                 );
 
 

@@ -1,7 +1,6 @@
-module TOP;
-    input  i_Clk;
-    input  RsRx;
-    output RsTx;
+module TOP (input  i_Clk,
+            input  RsRx,
+            output RsTx);
       
     wire SR2MUX_SEL; 
     wire ADDR1MUX_SEL;
@@ -98,12 +97,14 @@ module TOP;
                       debug_r7_out;
                       
           wire [7:0]  CURRENT_STATE_OUT,
-                      NEXT_STATE_OUT;
+                      NEXT_STATE_OUT,
+                      mini_state_out,
+                      next_mini_state;
           
     FSM fsm (i_Clk, ir_out, n_out, z_out, p_out, R_OUT,
              SR2MUX_SEL, ADDR1MUX_SEL, ADDR2MUX_SEL, MARMUX_SEL, PCMUX_SEL, MIO_EN,
              RW, DR, LD_REG, SR1_SEL, SR2_SEL, GateMARMUX, GateALU, GateMDR, GatePC, LD_CC,
-             LD_IR, LD_PC, LD_MAR, LD_MDR, ALUK, CURRENT_STATE_OUT, NEXT_STATE_OUT);
+             LD_IR, LD_PC, LD_MAR, LD_MDR, ALUK, CURRENT_STATE_OUT, NEXT_STATE_OUT, mini_state_out, next_mini_state);
               
     DATAPATH datapath(i_Clk, SR2MUX_SEL, ADDR1MUX_SEL, ADDR2MUX_SEL, MARMUX_SEL, PCMUX_SEL, MIO_EN,
                       RW, DR, LD_REG, SR1_SEL, SR2_SEL, GateMARMUX, GateALU, GateMDR, GatePC, LD_CC,
@@ -116,14 +117,17 @@ module TOP;
                       kbdr_out, kbsr_out, ddr_out, dsr_out, INMUX_SEL, R_MMIO,
                       debug_r0_out,debug_r1_out,debug_r2_out,debug_r3_out,debug_r4_out,debug_r5_out,debug_r6_out,debug_r7_out);
 
-    parameter c_CLKS_PER_BIT    = 87;
+    OUTPUT ot(i_Clk, dsr_out, ready, send, dsr_ext_out, LD_DSR_EXT);
     
-    uart_tx #(.CLKS_PER_BIT(c_CLKS_PER_BIT)) utx
-    (.i_Clock(i_Clk),
-     .i_Tx_Byte(ddr_out[7:0]),
-     .DSR(dsr_out),
-     .LD_DSR_EXT(LD_DSR_EXT),
-     .DSR_EXT(dsr_ext_out),
-     .o_Tx_Serial(RsTx));
-
+    wire ready;
+    wire send;
+    
+    uart_tx #(868) utx(.i_Clock(i_Clk),
+                       .i_Tx_DV(send),
+                       .i_Tx_Byte(ddr_out[7:0]),
+                       .o_Tx_Active(),
+                       .o_Tx_Serial(RsTx),
+                       .o_Tx_Done(ready));
+    
+    
 endmodule

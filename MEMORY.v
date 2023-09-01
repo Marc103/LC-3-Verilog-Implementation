@@ -11,7 +11,7 @@ module MEMORY(input i_Clk,
     // % 6, gives 115200 16-bit instructions
     // so lets use a quarter of it
 
-    reg [15:0] ram [28800:0];
+    reg [15:0] ram [32768:0];
     reg [15:0] tmp = 16'h0000;
     reg [2:0] mmio_ticks = 0;
             
@@ -69,9 +69,9 @@ module  ADDR_CTRL(input [15:0] mar_out,
                   input RW,
                   output reg MEM_EN,
                   output reg [1:0] INMUX_SEL = 2'b11,
-                  output reg LD_KBSR,
-                  output reg LD_DSR,
-                  output reg LD_DDR,
+                  output reg LD_KBSR = 0,
+                  output reg LD_DSR = 0,
+                  output reg LD_DDR = 0,
                   output reg R_MMIO = 0);
 
     always @(*)
