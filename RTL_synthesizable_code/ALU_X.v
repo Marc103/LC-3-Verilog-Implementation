@@ -6,15 +6,15 @@ module Alu #(parameter WIDTH = 16)
 
     always@(*)
         begin
-            case (ALUK)
+            case (aluk)
             2'b00:   // ADD
-                OUT = A + B;
+                out = a + b;
             2'b01:   // AND
-                OUT = A & B;
+                out = a & b;
             2'b10:   // NOT
-                OUT = ~A;
+                out = ~a;
             2'b11: // PASSA
-                OUT = A;
+                out = a;
             endcase
         end
 endmodule
@@ -26,7 +26,7 @@ module Adder #(parameter WIDTH = 16)
     assign out = d0 + d1;
 endmodule
 
-module PC_INCREMENT(input [15:0] PC,
-                    output [15:0] PC_INC);
-    assign PC_INC = PC_INC + 1;
+module Increment(input [15:0] d,
+                    output [15:0] out);
+    assign out = d + 1;
 endmodule 

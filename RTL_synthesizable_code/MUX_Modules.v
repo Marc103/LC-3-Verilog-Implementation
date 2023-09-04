@@ -1,4 +1,4 @@
-module 2MUX1 #(parameter WIDTH = 16) 
+module MUX2 #(parameter WIDTH = 16) 
               (input sel,
                input [WIDTH-1: 0] d0,
                input [WIDTH-1: 0] d1,
@@ -12,7 +12,7 @@ module 2MUX1 #(parameter WIDTH = 16)
         end
 endmodule
 
-module 4MUX2 #(parameter WIDTH = 16) 
+module MUX4 #(parameter WIDTH = 16) 
               (input [1:0] sel,
                input [WIDTH-1: 0] d0,
                input [WIDTH-1: 0] d1,
@@ -22,10 +22,10 @@ module 4MUX2 #(parameter WIDTH = 16)
     always@(*)
         begin
             case (sel)
-            1'b00: out = d0;
-            1'b01: out = d1;
-            1'b10: out = d2;
-            1'b11: out = d3;
+            2'b00: out = d0;
+            2'b01: out = d1;
+            2'b10: out = d2;
+            2'b11: out = d3;
             endcase
         end
 endmodule

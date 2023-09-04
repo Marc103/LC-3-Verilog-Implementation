@@ -1,133 +1,168 @@
-module TOP (input  i_Clk,
+`timescale 1ns / 1ps 
+
+module TOP ( // input  i_Clk,
             input  RsRx,
             output RsTx);
+            
+    reg i_Clk = 0;
+    initial 
+        begin
+            i_Clk = 0; 
+            forever 
+                begin
+                #10 i_Clk = ~i_Clk;
+            end 
+        end
+    
       
-    wire SR2MUX_SEL; 
+    reg reset_ = 1; 
+      
+    // FSM output wires
+    wire [1:0] ALUK;
+    
+    wire [1:0] BUS_SEL;
+    wire LD_BUS;
+    
+    wire RW;
+    wire MIO_EN;
+    
+    wire [2:0] DR;
+    wire [2:0] SR1_SEL;
+    wire [2:0] SR2_SEL;
+    
+    wire [1:0] PCMUX_SEL;
+    wire MARMUX_SEL;
     wire ADDR1MUX_SEL;
     wire [1:0] ADDR2MUX_SEL;
-    wire MARMUX_SEL;
-          
-    wire [1:0] PCMUX_SEL;
+    wire SR2MUX_SEL;
     
-    wire  MIO_EN,
-          RW;
-  
-    wire [2:0]  DR;         
-    wire    LD_REG;     
-    wire [2:0]  SR1_SEL,    
-                SR2_SEL;        
-                    
-    wire  GateMARMUX, 
-          GateALU,    
-          GateMDR,    
-          GatePC,     
-
-          LD_CC,
-          LD_IR,
-          LD_PC,
-          LD_MAR,
-          LD_MDR;
-
-    wire [1:0]  ALUK; 
+    wire LD_CC;
+    wire LD_REG;
+    wire LD_IR;
+    wire LD_PC;
+    wire LD_MAR;  
+    wire LD_MDR;
+    wire LD_KBSR;
+    wire LD_DDR;
+    wire LD_DSR;
     
-    wire LD_KBDR_EXT,
-         LD_KBSR_EXT,
-         LD_DSR_EXT;
-         
-    wire [15:0] kbdr_ext_out, // external (uart RX)
-                kbsr_ext_out, // external (uart RX)
-                dsr_ext_out;  // external (uart TX)
-          // -------------------
-    wire [15:0] bus_out,                // shared (one or more)
-                pc_out,
-                pc_out_inc,
-                ir_out,
-                
-                sr1_out,
-                sr2_out,
-
-                pcmux_out,
-                marmux_out,
-                addr1mux_out,
-                addr2mux_out,
-                addrmux_adder_out,
-                sr2mux_out,
-                miomux_out,
-                inmux_out,
-                
-                ir_zext_7_0_out,
-                ir_sext_10_0_out,       
-                ir_sext_8_0_out,
-                ir_sext_5_0_out,
-                ir_sext_4_0_out,
-                
-                alu_out;
-                
-          wire  n_out,
-                p_out,
-                z_out;
-                
-                
-          wire [15:0]   mar_out,
-                        mdr_out,
-                        mem_out;
-                        
-          wire R_OUT, // *
-               MEM_EN; // *
-          
-                
-          wire  LD_KBSR, // *
-                LD_DSR, // *
-                LD_DDR; // *
-
-          wire [15:0]   kbdr_out,
-                        kbsr_out,
-                        ddr_out,
-                        dsr_out;
-                        
-          wire [1:0] INMUX_SEL; // *
-          wire  R_MMIO; // *
-          wire [15:0] debug_r0_out,
-                      debug_r1_out,
-                      debug_r2_out,
-                      debug_r3_out,
-                      debug_r4_out,
-                      debug_r5_out,
-                      debug_r6_out,
-                      debug_r7_out;
+    // Datapath output wires
+    wire [15:0] IR;
+    wire R;
+    wire [15:0] DDR;
+    wire [15:0] DSR;
+    
+    // Output output wires
+    wire SEND;
+    wire [15:0] status;
+    wire LD_DSR_EXT;
+    
+    // Uart TX output wires
+    wire DONE;
+    
+    // Debug
+    wire [15:0] d_mar;
+    wire [15:0] d_mdr;
+    wire [15:0] d_mem;
+    wire [15:0] d_bus;
+    
+    wire [9:0] d_state;
+      
+      
+    FSM fsm (// --------------- INPUTS
+             .i_Clk(i_Clk),
+             .reset_(reset_),
+             .ir(IR),
+             .r(R),
+             // --------------- OUTPUTS
+             .aluk(ALUK),
+             
+             .bus_sel(BUS_SEL),
+             .ld_bus(LD_BUS),
+             
+             .rw(RW),
+             .mio_en(MIO_EN),
+             
+             .dr(DR),
+             .sr1_sel(SR1_SEL),
+             .sr2_sel(SR2_SEL),
+             
+             .pcmux_sel(PCMUX_SEL),
+             .marmux_sel(MARMUX_SEL),
+             .addr1mux_sel(ADDR1MUX_SEL),
+             .addr2mux_sel(ADDR2MUX_SEL),
+             .sr2mux_sel(SR2MUX_SEL),
+             
+             .ld_cc(LD_CC),
+             .ld_reg(LD_REG),
+             .ld_ir(LD_IR),
+             .ld_pc(LD_PC),
+             .ld_mar(LD_MAR),
+             .ld_mdr(LD_MDR),
+             
+             .ld_kbsr(LD_KBSR),
+             .ld_ddr(LD_DDR),
+             .ld_dsr(LD_DSR),
+             
+             .debug_state(d_state));
+             
+    DATAPATH datapath(// INPUTS --------------------
+                      .i_Clk(i_Clk),
+                      .reset_(reset_),
+                     
+                      .ALUK(ALUK),
                       
-          wire [7:0]  CURRENT_STATE_OUT,
-                      NEXT_STATE_OUT,
-                      mini_state_out,
-                      next_mini_state;
-          
-    FSM fsm (i_Clk, ir_out, n_out, z_out, p_out, R_OUT,
-             SR2MUX_SEL, ADDR1MUX_SEL, ADDR2MUX_SEL, MARMUX_SEL, PCMUX_SEL, MIO_EN,
-             RW, DR, LD_REG, SR1_SEL, SR2_SEL, GateMARMUX, GateALU, GateMDR, GatePC, LD_CC,
-             LD_IR, LD_PC, LD_MAR, LD_MDR, ALUK, CURRENT_STATE_OUT, NEXT_STATE_OUT, mini_state_out, next_mini_state);
-              
-    DATAPATH datapath(i_Clk, SR2MUX_SEL, ADDR1MUX_SEL, ADDR2MUX_SEL, MARMUX_SEL, PCMUX_SEL, MIO_EN,
-                      RW, DR, LD_REG, SR1_SEL, SR2_SEL, GateMARMUX, GateALU, GateMDR, GatePC, LD_CC,
-                      LD_IR, LD_PC, LD_MAR, LD_MDR, ALUK,
-                      LD_KBDR_EXT, LD_KBSR_EXT, LD_DSR_EXT, kbdr_ext_out, kbsr_ext_out, dsr_ext_out,
-                      bus_out, pc_out, pc_out_inc, ir_out, sr1_out, sr2_out,
-                      pcmux_out, marmux_out, addr1mux_out, addr2mux_out, addrmux_adder_out, sr2mux_out, miomux_out,
-                      inmux_out, ir_zext_7_0_out, ir_sext_10_0_out, ir_sext_8_0_out, ir_sext_5_0_out, ir_sext_4_0_out,
-                      alu_out, n_out, p_out, z_out, mar_out, mdr_out, mem_out, R_OUT, MEM_EN, LD_KBSR, LD_DSR, LD_DDR, 
-                      kbdr_out, kbsr_out, ddr_out, dsr_out, INMUX_SEL, R_MMIO,
-                      debug_r0_out,debug_r1_out,debug_r2_out,debug_r3_out,debug_r4_out,debug_r5_out,debug_r6_out,debug_r7_out);
-
-    OUTPUT ot(i_Clk, dsr_out, ready, send, dsr_ext_out, LD_DSR_EXT);
+                      .BUS_SEL(BUS_SEL),
+                      .LD_BUS(LD_BUS),
+                      
+                      .RW(RW),
+                      .MIO_EN(MIO_EN),
+                      
+                      .DR(DR),
+                      .SR1_SEL(SR1_SEL),
+                      .SR2_SEL(SR2_SEL),
+                      
+                      .PCMUX_SEL(PCMUX_SEL),
+                      .SR2MUX_SEL(SR2MUX_SEL),
+                      .MARMUX_SEL(MARMUX_SEL),
+                      .ADDR1MUX_SEL(ADDR1MUX_SEL),
+                      .ADDR2MUX_SEL(ADDR2MUX_SEL),
+                      
+                      .LD_CC(LD_CC),
+                      .LD_REG(LD_REG),
+                      .LD_IR(LD_IR),
+                      .LD_PC(LD_PC),
+                      .LD_MAR(LD_MAR),
+                      .LD_MDR(LD_MDR),
+                      
+                      // OUTPUTS -----------------
+                      .R(R),
+                      .ir(IR),
+                      .ddr(DDR),
+                      .dsr(DSR),
+                      // Debugs
+                      .debug_mar(d_mar),
+                      .debug_mdr(d_mdr),
+                      .debug_memory(d_mem),
+                      .debug_bus(d_bus));
+                      
+        OUTPUT ot (.clk(i_Clk),
+                   .dsr(DSR),
+                   .done(DONE),
+                   .send(SEND),
+                   .status(status),
+                   .ld_dsr_ext(LD_DSR_EXT));
+                   
+        uart_tx utx (.i_Clock(i_Clk),
+                     .i_Tx_DV(SEND),
+                     .i_Tx_Byte(DDR[7:0]),
+                     .o_Tx_Active(),
+                     .o_Tx_Serial(RsTx),
+                     .o_Tx_Done(DONE));
+                     
     
-    wire ready;
-    wire send;
-    
-    uart_tx #(868) utx(.i_Clock(i_Clk),
-                       .i_Tx_DV(send),
-                       .i_Tx_Byte(ddr_out[7:0]),
-                       .o_Tx_Active(),
-                       .o_Tx_Serial(RsTx),
-                       .o_Tx_Done(ready));
+     
+             
     
     
 endmodule
