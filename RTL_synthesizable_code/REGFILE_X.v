@@ -6,9 +6,18 @@ module Regfile (input clk,
                 input [2:0] sr2_sel,
                 input [15:0] bus,
                 output [15:0] sr1,
-                output [15:0] sr2);
+                output [15:0] sr2,
+                // debugs
+                output [15:0] debug_r0,
+                output [15:0] debug_r1,
+                output [15:0] debug_r2,
+                output [15:0] debug_r3,
+                output [15:0] debug_r4,
+                output [15:0] debug_r5,
+                output [15:0] debug_r6,
+                output [15:0] debug_r7);
 
-    
+     
     // GP registers
     reg ld_r0;
     reg ld_r1;
@@ -105,6 +114,15 @@ module Regfile (input clk,
     // Output combinatorial logic 
      assign sr1 = sr1_sel[2] ? (sr1_sel[1] ? (sr1_sel[0] ? (r7) : (r6)) : (sr1_sel[0] ? (r5) : (r4))) : (sr1_sel[1] ? (sr1_sel[0] ? (r3) : (r2)) : (sr1_sel[0] ? (r1) : (r0)));
      assign sr2 = sr2_sel[2] ? (sr2_sel[1] ? (sr2_sel[0] ? (r7) : (r6)) : (sr2_sel[0] ? (r5) : (r4))) : (sr2_sel[1] ? (sr2_sel[0] ? (r3) : (r2)) : (sr2_sel[0] ? (r1) : (r0)));
+
+     assign debug_r0 = r0;
+     assign debug_r1 = r1;
+     assign debug_r2 = r2;
+     assign debug_r3 = r3;
+     assign debug_r4 = r4;
+     assign debug_r5 = r5;
+     assign debug_r6 = r6;
+     assign debug_r7 = r7;
 
 endmodule
 

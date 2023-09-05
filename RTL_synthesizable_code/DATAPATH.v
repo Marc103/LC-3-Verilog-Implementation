@@ -34,18 +34,29 @@ module DATAPATH(input i_Clk,
                 
                 output R,
                 output [15:0] ir,
+                output [2:0] nzp,
                 output [15:0] ddr,
                 output [15:0] dsr,
                 
                 output [15:0] debug_mdr,
                 output [15:0] debug_mar,
                 output [15:0] debug_memory,
-                output [15:0] debug_bus
+                output [15:0] debug_bus,
+                output [15:0] debug_r0,
+                output [15:0] debug_r1,
+                output [15:0] debug_r2,
+                output [15:0] debug_r3,
+                output [15:0] debug_r4,
+                output [15:0] debug_r5,
+                output [15:0] debug_r6,
+                output [15:0] debug_r7,
+                output [15:0] debug_pc,
+                output [15:0] debug_ddr,
+                output [15:0] debug_dsr
                 );
 
     // Datapath Wires
     wire [15:0] alu_results;
-    wire [2:0] nzp;
     wire [15:0] bus;
     wire [15:0] sr1;
     wire [15:0] sr2;
@@ -80,12 +91,16 @@ module DATAPATH(input i_Clk,
     assign debug_mar = mar;
     assign debug_memory = memory;
     assign debug_bus = bus;
+    assign debug_pc = pc;
+    assign debug_ddr = ddr;
+    assign debug_dsr = dsr;
+    
     
     
     // ALU
     Alu ALU (.aluk(ALUK),
              .a(sr1),
-             .b(sr2),
+             .b(sr2mux),
              .out(alu_results));
     
     // NZP
@@ -115,7 +130,15 @@ module DATAPATH(input i_Clk,
                      .sr2_sel(SR2_SEL),
                      .bus(bus),
                      .sr1(sr1),
-                     .sr2(sr2));
+                     .sr2(sr2),
+                     .debug_r0(debug_r0),
+                     .debug_r1(debug_r1),
+                     .debug_r2(debug_r2),
+                     .debug_r3(debug_r3),
+                     .debug_r4(debug_r4),
+                     .debug_r5(debug_r5),
+                     .debug_r6(debug_r6),
+                     .debug_r7(debug_r7));
     
     // Memory
     Sram sram (.clk(i_Clk),
@@ -152,7 +175,7 @@ module DATAPATH(input i_Clk,
     FFReg MAR (.clk(i_Clk),
                .ce(LD_MAR),
                .reset_(reset_),
-               .d(marmux),
+               .d(bus),
                .out(mar));
     
     FFReg MDR (.clk(i_Clk),
@@ -173,7 +196,7 @@ module DATAPATH(input i_Clk,
                     .out(addr1mux));
     
     MUX2 SR2MUX (.sel(SR2MUX_SEL),
-                  .d0(ir_z_7_0),
+                  .d0(ir_s_4_0),
                   .d1(sr2),
                   .out(sr2mux));
     

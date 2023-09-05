@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps 
 
-module TOP ( // input  i_Clk,
+module TOP (//input  i_Clk,
             input  RsRx,
             output RsTx);
             
@@ -11,8 +11,8 @@ module TOP ( // input  i_Clk,
             forever 
                 begin
                 #10 i_Clk = ~i_Clk;
-            end 
-        end
+           end 
+       end
     
       
     reg reset_ = 1; 
@@ -49,8 +49,10 @@ module TOP ( // input  i_Clk,
     // Datapath output wires
     wire [15:0] IR;
     wire R;
+    wire [2:0] NZP;
     wire [15:0] DDR;
     wire [15:0] DSR;
+    
     
     // Output output wires
     wire SEND;
@@ -66,7 +68,22 @@ module TOP ( // input  i_Clk,
     wire [15:0] d_mem;
     wire [15:0] d_bus;
     
+    
     wire [9:0] d_state;
+    
+    wire [15:0] d_r0;
+    wire [15:0] d_r1;
+    wire [15:0] d_r2;
+    wire [15:0] d_r3;
+    wire [15:0] d_r4;
+    wire [15:0] d_r5;
+    wire [15:0] d_r6;
+    wire [15:0] d_r7;
+    
+    wire [15:0] d_pc;
+    
+    wire [15:0] d_ddr;
+    wire [15:0] d_dsr;
       
       
     FSM fsm (// --------------- INPUTS
@@ -74,6 +91,7 @@ module TOP ( // input  i_Clk,
              .reset_(reset_),
              .ir(IR),
              .r(R),
+             .nzp(NZP),
              // --------------- OUTPUTS
              .aluk(ALUK),
              
@@ -135,16 +153,31 @@ module TOP ( // input  i_Clk,
                       .LD_MAR(LD_MAR),
                       .LD_MDR(LD_MDR),
                       
+                      .LD_DSR_EXT(LD_DSR_EXT),
+                      .dsr_ext(status),
+                      
                       // OUTPUTS -----------------
                       .R(R),
                       .ir(IR),
+                      .nzp(NZP),
                       .ddr(DDR),
                       .dsr(DSR),
                       // Debugs
                       .debug_mar(d_mar),
                       .debug_mdr(d_mdr),
                       .debug_memory(d_mem),
-                      .debug_bus(d_bus));
+                      .debug_bus(d_bus),
+                      .debug_r0(d_r0),
+                      .debug_r1(d_r1),
+                      .debug_r2(d_r2),
+                      .debug_r3(d_r3),
+                      .debug_r4(d_r4),
+                      .debug_r5(d_r5),
+                      .debug_r6(d_r6),
+                      .debug_r7(d_r7),
+                      .debug_pc(d_pc),
+                      .debug_ddr(d_ddr),
+                      .debug_dsr(d_dsr));
                       
         OUTPUT ot (.clk(i_Clk),
                    .dsr(DSR),
