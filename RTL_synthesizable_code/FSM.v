@@ -33,7 +33,8 @@ module FSM(input i_Clk,
            output reg ld_ddr,
            output reg ld_dsr,
            // Debug
-           output [9:0] debug_state);
+           output [9:0] debug_state,
+           output debug_ben);
            
     reg [9:0] CURRENT_STATE = 18;
     reg [9:0] NEXT_STATE = 18;
@@ -41,10 +42,11 @@ module FSM(input i_Clk,
     reg LD_BEN = 0;
     
     wire BEN;
-    assign BEN = (ir[11] & nzp[2]) | (ir[10] & nzp[1]) | (ir[9] | nzp[0]);
+    assign BEN = (ir[11] & nzp[2]) | (ir[10] & nzp[1]) | (ir[9] & nzp[0]);
     
     // Debug
     assign debug_state = CURRENT_STATE;
+    assign debug_ben = BEN;
     
     always@(*)
     begin
@@ -238,19 +240,19 @@ module FSM(input i_Clk,
             begin
             // DR <- NOT(SR1)
             // set CC
-            aluk = 2'b01;
+            aluk = 2'b10;
             sr1_sel = ir[8:6];
 
+            bus_sel = 2'b10;
             ld_bus = 1;
-            bus_sel = 2'b11;
-            
+             
             NEXT_STATE = 990;
             end
          990:
             begin
+            dr = ir[11:9];
             ld_cc = 1;
             ld_reg = 1;
-            dr = ir[11:9];
             NEXT_STATE = 18;
             end
             
@@ -501,7 +503,7 @@ module FSM(input i_Clk,
             ld_bus = 1;
             bus_sel = 2'b00;
             
-            NEXT_STATE = 300;
+            NEXT_STATE = 330;
             end
          330:
             begin
@@ -569,11 +571,12 @@ module FSM(input i_Clk,
           
           12: // JMP
             begin
-            aluk = 2'b11;
             sr1_sel = ir[8:6];
-            
-            ld_bus = 1;
-            bus_sel = 2'b10;
+            pcmux_sel = 2'b01;
+            addr1mux_sel = 1'b0;
+            addr2mux_sel = 2'b11;
+
+            ld_pc = 1;
             NEXT_STATE = 18;
             end
           
@@ -646,13 +649,4 @@ module FSM(input i_Clk,
                 CURRENT_STATE <= NEXT_STATE;
         end
            
-           
-                             
-                             
-           
-           
-           
-           
-          
-
 endmodule 

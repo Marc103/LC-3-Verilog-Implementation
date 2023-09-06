@@ -1,0 +1,7 @@
+ram[0] = 16'b0001000000100111; // ADD R0 R0  7
+ram[1] = 16'b0000110111111110; // BR 110 -1
+ram[2] = 16'b0001000000110000; // ADD R0 R0 -2^4
+ram[3] = 16'b0000110111111100; // BR 110 -4
+R0: 7 then (7-2^4)
+* First branch should fail, second branch should branch to 0
+* good for checking NZP and CC logic

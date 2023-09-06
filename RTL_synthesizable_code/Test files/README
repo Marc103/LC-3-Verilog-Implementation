@@ -1,0 +1,9 @@
+Order of running test files:
+1. ADD
+2. AND
+3. NOT
+4. LEA
+5. LD
+6. LDR
+7. LDI
+

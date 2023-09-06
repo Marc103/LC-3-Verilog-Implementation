@@ -70,6 +70,7 @@ module TOP (//input  i_Clk,
     
     
     wire [9:0] d_state;
+    wire d_ben;
     
     wire [15:0] d_r0;
     wire [15:0] d_r1;
@@ -121,8 +122,9 @@ module TOP (//input  i_Clk,
              .ld_kbsr(LD_KBSR),
              .ld_ddr(LD_DDR),
              .ld_dsr(LD_DSR),
-             
-             .debug_state(d_state));
+              // Debugs
+             .debug_state(d_state),
+             .debug_ben(d_ben));
              
     DATAPATH datapath(// INPUTS --------------------
                       .i_Clk(i_Clk),

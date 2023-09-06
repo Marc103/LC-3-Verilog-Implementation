@@ -1,0 +1,5 @@
+ram[0] = 16'b0001000000101000; // ADD R0 R0  8
+ram[1] = 16'b1100000000000000; // JMP R0
+ram[8] = 16'hBEEF;
+R0: 8
+* PC jumps to 8 (IR should be BEEF)
