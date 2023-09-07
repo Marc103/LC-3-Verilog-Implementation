@@ -37,6 +37,8 @@ module DATAPATH(input i_Clk,
                 output [2:0] nzp,
                 output [15:0] ddr,
                 output [15:0] dsr,
+                output [15:0] kbdr,
+                output [15:0] kbsr,
                 
                 output [15:0] debug_mdr,
                 output [15:0] debug_mar,
@@ -50,9 +52,7 @@ module DATAPATH(input i_Clk,
                 output [15:0] debug_r5,
                 output [15:0] debug_r6,
                 output [15:0] debug_r7,
-                output [15:0] debug_pc,
-                output [15:0] debug_ddr,
-                output [15:0] debug_dsr
+                output [15:0] debug_pc
                 );
 
     // Datapath Wires
@@ -81,8 +81,6 @@ module DATAPATH(input i_Clk,
     wire [15:0] ir_s_5_0;
     wire [15:0] ir_s_4_0;
     wire [15:0] ir_z_7_0;
-    wire [15:0] kbdr;
-    wire [15:0] kbsr;
     wire [15:0] pc_inc;
     wire [15:0] addrmuxes_added;
     
@@ -92,10 +90,6 @@ module DATAPATH(input i_Clk,
     assign debug_memory = memory;
     assign debug_bus = bus;
     assign debug_pc = pc;
-    assign debug_ddr = ddr;
-    assign debug_dsr = dsr;
-    
-    
     
     // ALU
     Alu ALU (.aluk(ALUK),

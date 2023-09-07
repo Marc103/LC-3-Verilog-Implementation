@@ -12,12 +12,13 @@
 // (10000000)/(115200) = 87
   
 module uart_rx 
-  #(parameter CLKS_PER_BIT = 87)
+  #(parameter CLKS_PER_BIT = 868)
   (
    input        i_Clock,
    input        i_Rx_Serial,
+   input        i_Recieve,
    output       o_Rx_DV,
-   output [7:0] o_Rx_Byte
+   output [15:0] o_Rx_Byte
    );
     
   parameter s_IDLE         = 3'b000;
@@ -29,7 +30,7 @@ module uart_rx
   reg           r_Rx_Data_R = 1'b1;
   reg           r_Rx_Data   = 1'b1;
    
-  reg [7:0]     r_Clock_Count = 0;
+  reg [10:0]    r_Clock_Count = 0;
   reg [2:0]     r_Bit_Index   = 0; //8 bits total
   reg [7:0]     r_Rx_Byte     = 0;
   reg           r_Rx_DV       = 0;
@@ -56,7 +57,7 @@ module uart_rx
             r_Clock_Count <= 0;
             r_Bit_Index   <= 0;
              
-            if (r_Rx_Data == 1'b0)          // Start bit detected
+            if (r_Rx_Data == 1'b0 & i_Recieve)          // Start bit detected
               r_SM_Main <= s_RX_START_BIT;
             else
               r_SM_Main <= s_IDLE;
@@ -144,6 +145,6 @@ module uart_rx
     end   
    
   assign o_Rx_DV   = r_Rx_DV;
-  assign o_Rx_Byte = r_Rx_Byte;
+  assign o_Rx_Byte = {{8{1'b0}}, r_Rx_Byte};
    
 endmodule // uart_rx

@@ -6,4 +6,18 @@ Order of running test files:
 5. LD
 6. LDR
 7. LDI
-
+8. ST
+9. STR
+10. STI
+11. JSR
+12. JMP
+13. BR
+14. UART TX
+15. UART RX
+* Necessary because latter tests use
+* functionalities tested earlier
+* MEMORY MAPPINGS
+- 0F30 -> KBDR
+- 0F31 -> KBSR
+- 0F32 -> DDR
+- 0F33 -> DSR

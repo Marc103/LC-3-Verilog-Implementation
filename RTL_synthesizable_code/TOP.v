@@ -1,18 +1,19 @@
 `timescale 1ns / 1ps 
 
-module TOP (//input  i_Clk,
+module TOP (input  i_Clk,
             input  RsRx,
-            output RsTx);
+            output RsTx,
+            output [15:0] LED);
             
-    reg i_Clk = 0;
-    initial 
-        begin
-            i_Clk = 0; 
-            forever 
-                begin
-                #10 i_Clk = ~i_Clk;
-           end 
-       end
+    //reg i_Clk = 0;
+    //initial 
+    //    begin
+    //        i_Clk = 0; 
+    //        forever 
+    //            begin
+    //            #10 i_Clk = ~i_Clk;
+    //       end 
+    //   end
     
       
     reg reset_ = 1; 
@@ -52,15 +53,32 @@ module TOP (//input  i_Clk,
     wire [2:0] NZP;
     wire [15:0] DDR;
     wire [15:0] DSR;
+    wire [15:0] KBDR;
+    wire [15:0] KBSR;
     
     
     // Output output wires
     wire SEND;
-    wire [15:0] status;
+
     wire LD_DSR_EXT;
+    wire [15:0] dsr_status;
+    
+
+    // Input output wires
+    wire RECIEVE;
+
+    
+
+    wire LD_KBSR_EXT;
+    wire [15:0] kbsr_status;
     
     // Uart TX output wires
-    wire DONE;
+    wire DONE_TX;
+
+    // Uart RX output wires
+    wire DONE_RX; // feed to LD_KBDR_EXT
+    wire [15:0] kbdr_ext; 
+
     
     // Debug
     wire [15:0] d_mar;
@@ -83,9 +101,7 @@ module TOP (//input  i_Clk,
     
     wire [15:0] d_pc;
     
-    wire [15:0] d_ddr;
-    wire [15:0] d_dsr;
-      
+    assign LED = KBDR;
       
     FSM fsm (// --------------- INPUTS
              .i_Clk(i_Clk),
@@ -156,7 +172,13 @@ module TOP (//input  i_Clk,
                       .LD_MDR(LD_MDR),
                       
                       .LD_DSR_EXT(LD_DSR_EXT),
-                      .dsr_ext(status),
+                      .dsr_ext(dsr_status),
+
+                      .LD_KBDR_EXT(DONE_RX),
+                      .kbdr_ext(kbdr_ext),
+
+                      .LD_KBSR_EXT(LD_KBSR_EXT),
+                      .kbsr_ext(kbsr_status),
                       
                       // OUTPUTS -----------------
                       .R(R),
@@ -164,6 +186,9 @@ module TOP (//input  i_Clk,
                       .nzp(NZP),
                       .ddr(DDR),
                       .dsr(DSR),
+                      .kbdr(KBDR),
+                      .kbsr(KBSR),
+
                       // Debugs
                       .debug_mar(d_mar),
                       .debug_mdr(d_mdr),
@@ -177,15 +202,13 @@ module TOP (//input  i_Clk,
                       .debug_r5(d_r5),
                       .debug_r6(d_r6),
                       .debug_r7(d_r7),
-                      .debug_pc(d_pc),
-                      .debug_ddr(d_ddr),
-                      .debug_dsr(d_dsr));
+                      .debug_pc(d_pc));
                       
         OUTPUT ot (.clk(i_Clk),
                    .dsr(DSR),
-                   .done(DONE),
+                   .done(DONE_TX),
                    .send(SEND),
-                   .status(status),
+                   .status(dsr_status),
                    .ld_dsr_ext(LD_DSR_EXT));
                    
         uart_tx utx (.i_Clock(i_Clk),
@@ -193,7 +216,20 @@ module TOP (//input  i_Clk,
                      .i_Tx_Byte(DDR[7:0]),
                      .o_Tx_Active(),
                      .o_Tx_Serial(RsTx),
-                     .o_Tx_Done(DONE));
+                     .o_Tx_Done(DONE_TX));
+
+        INPUT in (.clk(i_Clk),
+                  .kbsr(KBSR),
+                  .done(DONE_RX),
+                  .recieve(RECIEVE),
+                  .status(kbsr_status),
+                  .ld_kbsr_ext(LD_KBSR_EXT));
+
+        uart_rx urx (.i_Clock(i_Clk),
+                     .i_Rx_Serial(RsRx),
+                     .i_Recieve(RECIEVE),
+                     .o_Rx_DV(DONE_RX),
+                     .o_Rx_Byte(kbdr_ext));
                      
     
      

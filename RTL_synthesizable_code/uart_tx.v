@@ -18,7 +18,7 @@ module uart_tx
    input       i_Tx_DV,
    input [7:0] i_Tx_Byte, 
    output      o_Tx_Active,
-   output reg  o_Tx_Serial = 0,
+   output reg  o_Tx_Serial = 1,
    output      o_Tx_Done
    );
   
