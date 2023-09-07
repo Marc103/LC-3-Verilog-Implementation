@@ -1,0 +1,13 @@
+ram[x + 0] = 16'b0110000001000000; // LDR R0 R1 0
+ram[x + 1] = 16'b0000010000000011; // BR 010 3
+ram[x + 2] = 16'b0100000011000000; // JSRR R3
+ram[x + 3] = 16'b0001001001100001; // ADD R1 R1 1
+ram[x + 4] = 16'b0000111111111011; // BR 111 -5
+ram[x + 5] = 16'b1100000010000000; // JMP R2
+
+// Displays multiple characters
+// R0 populated with each character one at time
+// R1 points to first char
+//  - must have null terminating character at end of string (0)
+// R2 save pointer to where the function (DisplayString) was called from
+// R3 pointer to DisplayChar function

@@ -101,7 +101,7 @@ module TOP (input  i_Clk,
     
     wire [15:0] d_pc;
     
-    assign LED = KBDR;
+    assign LED = d_r0;
       
     FSM fsm (// --------------- INPUTS
              .i_Clk(i_Clk),

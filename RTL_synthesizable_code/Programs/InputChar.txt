@@ -1,0 +1,13 @@
+// Input Char code
+ram[x - 1]  = 16'h03F0;
+// JSR down below
+ram[x + 0] = 16'b0101101101100000; // AND R5 R5 0 * clear R5
+ram[x + 1] = 16'b0001101101100001; // ADD R5 R5 1 * set R5
+ram[x + 2] = 16'b0010110111111100; // LD R6 -4    * set R6 to point to mmio
+ram[x + 3] = 16'b0111101110000001; // STR R5 R6 1 * KBSR set
+ram[x + 4] = 16'b0110101110000001; // LDR R5 R6 1 * poll KBSR
+ram[x + 5] = 16'b0000001111111110; // BR 001 -2   * wait
+ram[x + 6] = 16'b0110000110000000; // LDR R0 R6 0 * load input into R0
+ram[x + 7] = 16'b1100000111000000; // JMP R7      * return from JSR
+
+// Inputs a char into R0

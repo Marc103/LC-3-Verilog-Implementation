@@ -12,20 +12,69 @@ module Sram(input clk,
     // Initialize RAM contents here
     initial
         begin
-            ram[0]  = 16'b0100100000000001; // JSR 1
-            ram[1]  = 16'h03F0;
-            ram[2]  = 16'b0010110111111110; // LD R6 -2
-            ram[3]  = 16'b0001101101100001; // ADD R5 R5 1
-            ram[4]  = 16'b0111101110000001; // STR R5 R6 1
-            ram[5]  = 16'b0110101110000001; // LDR R5 R6 1
-            ram[6]  = 16'b0000001111111110; // BR 001 -2
-            ram[7]  = 16'b0110000110000000; // LDR R0 R6 0
-            ram[8]  = 16'b0111000110000010; // STR R0 R6 2
-            ram[9]  = 16'b0001101101100001; // ADD R5 R5 1
-            ram[10] = 16'b0111101110000011; // STR R5 R6 3
-            ram[11] = 16'b0110101110000011; // LDR R5 R6 3
-            ram[12] = 16'b0000001111111110; // BR 001 -2
-            ram[13] = 16'b0100111111110010; // JSR -14
+            //ram[0] = 16'h0040;
+            //ram[1] = 16'b0010000111111110;
+            //ram[2] = 16'b0100100011000101;
+            
+            ram[0] = 16'b01001000000011; // JSR 3
+            ram[1] = 16'h01F4; // String pointer (500)
+            ram[2] = 16'h0008; // Return pointer
+            ram[3] = 16'h00C8; // DisplayChar function pointer
+            ram[4] = 16'b0010001111111100; // LD R1 -4 *load R1 with string pointer
+            ram[5] = 16'b0010010111111100; // LD R2 -4 *load R2 with return pointer
+            ram[6] = 16'b0010011111111100; // LD R3 -4 *load R3 with DisplayChar function pointer
+            ram[7] = 16'b0100100100100100; // JSR 292  * JSR to DisplayString function (at 300)
+            
+            
+            // Input Char code
+            ram[99]  = 16'h03F0;
+            // JSR down below
+            ram[100] = 16'b0101101101100000; // AND R5 R5 0 * clear R5
+            ram[101] = 16'b0001101101100001; // ADD R5 R5 1 * set R5
+            ram[102] = 16'b0010110111111100; // LD R6 -4    * set R6 to point to mmio
+            ram[103] = 16'b0111101110000001; // STR R5 R6 1 * KBSR set
+            ram[104] = 16'b0110101110000001; // LDR R5 R6 1 * poll KBSR
+            ram[105] = 16'b0000001111111110; // BR 001 -2   * wait
+            ram[106] = 16'b0110000110000000; // LDR R0 R6 0 * load input into R0
+            ram[107] = 16'b1100000111000000; // JMP R7      * return from JSR
+            
+            
+            // Display Char code
+            ram[199] = 16'h03F0;
+            // JSR down below
+            ram[200] = 16'b0101101101100000; // AND R5 R5 0 * clear R5
+            ram[201] = 16'b0001101101100001; // ADD R5 R5 1 * set R5
+            ram[202] = 16'b0010110111111100; // LD R6 -4    * set R6 to point to mmio
+            ram[203] = 16'b0111000110000010; // STR R0 R6 2 * DDR loaded
+            ram[204] = 16'b0111101110000011; // STR R5 R6 3 * DSR set
+            ram[205] = 16'b0110101110000011; // LDR R5 R6 3 * poll DSR
+            ram[206] = 16'b0000001111111110; // BR 001 -2   * wait till finish
+            ram[207] = 16'b1100000111000000; // JMP R7      * return from JSR
+            
+            // Display String
+            ram[300] = 16'b0110000001000000; // LDR R0 R1 0
+            ram[301] = 16'b0000010000000011; // BR 010 3
+            ram[302] = 16'b0100000011000000; // JSRR R3
+            ram[303] = 16'b0001001001100001; // ADD R1 R1 1
+            ram[304] = 16'b0000111111111011; // BR 111 -5
+            ram[305] = 16'b1100000010000000; // JMP R2 
+            
+            ram[500] = 16'h0048; // H
+            ram[501] = 16'h0065; // e
+            ram[502] = 16'h006C; // l
+            ram[503] = 16'h006C; // l
+            ram[504] = 16'h006F; // o
+            ram[505] = 16'h0020; // Space 
+            ram[506] = 16'h0057; // W
+            ram[507] = 16'h006F; // o 
+            ram[508] = 16'h0072; // r 
+            ram[509] = 16'h006C; // l 
+            ram[510] = 16'h0064; // d 
+            ram[511] = 16'h0021; // ! 
+            ram[512] = 16'h0000; // null terminating
+            
+            
+            
         end
     
 	

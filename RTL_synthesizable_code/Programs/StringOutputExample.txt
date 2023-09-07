@@ -1,0 +1,8 @@
+ram[0] = 16'b01001000000011; // JSR 3
+ram[1] = 16'h01F4; // String pointer
+ram[2] = 16'h0008; // Return pointer
+ram[3] = 16'h00C8; // DisplayChar function pointer
+ram[4] = 16'b0010001111111100; // LD R1 -4 *load R1 with string pointer
+ram[5] = 16'b0010010111111100; // LD R2 -4 *load R2 with return pointer
+ram[6] = 16'b0010011111111100; // LD R3 -4 *load R3 with DisplayChar function pointer
+ram[7] = 16'b0100100100100100; // JSR 292  * JSR to DisplayString function (at 300)
