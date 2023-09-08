@@ -1,0 +1,5 @@
+// R0 - each char inputted and stored here
+// R1 - string pointer
+// R2 - return pointer 
+// R3 - input char function pointer
+// R4 - display char function pointer

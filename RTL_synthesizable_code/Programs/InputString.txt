@@ -1,0 +1,21 @@
+ram[x - 1]  = 16'hFFF3                               * negative value of 'enter' (aka carriage return on windows) ascii code, -13
+ram[x + 0]  = 16'b0100000011000000 // JSRR R3        * Input char
+ram[x + 1]  = 16'b0010101111111101 // LD R5 -3       * Very important to do this AFTER input (InputChar uses R5)
+ram[x + 2]  = 16'b0101110110100000 // AND R6 R6 0    * clear R6
+ram[x + 3]  = 16'b0001110000000101 // ADD R6 R0 R5   * 
+ram[x + 4]  = 16'b0000010000000100 // BR Z 4         * Check if 'enter' ascii code
+ram[x + 5]  = 16'b0111000001000000 // STR R0 R1 0    * Store char at pointer
+ram[x + 6]  = 16'b0001001001100001 // ADD R1 R1 1    * increment pointer
+ram[x + 7]  = 16'b0100000100000000 // JSRR R4        * Display char
+ram[x + 8]  = 16'b0000111111110111 // BR NZP -9      * Loop back to input char
+ram[x + 9]  = 16'b0101000000100000 // AND R0 R0 0    *
+ram[x + 10] = 16'b0111000001000000 // STR R0 R1 0    * Store null terminating value
+ram[x + 11] = 16'b1100000010000000 // JMP R2         * return from subroutine
+
+// Inputs and displays multiple each char as being inputted
+// saves them at the string pointer provided
+// R0 used to store inputted char
+// R1 string pointer
+// R2 save pointer to where the function (InputString) was called from
+// R3 pointer to InputChar function
+// R4 pointer to DisplayChar function

@@ -1,4 +1,4 @@
-ram[0] = 16'b01001000000011; // JSR 3
+ram[0] = 16'b0100100000000011; // JSR 3
 ram[1] = 16'h01F4; // String pointer (500)
 ram[2] = 16'h0008; // Return pointer
 ram[3] = 16'h00C8; // DisplayChar function pointer
