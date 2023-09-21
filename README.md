@@ -1,4 +1,5 @@
-# LC-3-Verilog-Implementation
+# LC-3-Verilog-Implementation by Marcos Ferreira
+Quick demo video if you want to skip all the reading: https://www.youtube.com/watch?v=YD5hFmmb9sU
 I will be implementing the LC-3 ISA specifications in Verilog.
 the LC-3 ISA can be found at "introduction to computing systems" by Yale N. Patt and Sanjay J. Patel.
 
@@ -62,7 +63,6 @@ are reflective of whats actually happening in hardware. I continued writing more
 to translate it to machine code (otherwise shortly before I was doing it manually by hand) and eventually ended with a program that does this:
 
 ![image](https://github.com/Marc103/LC-3-Verilog-Implementation/assets/78170299/c8b2c04f-68d9-4710-adbe-f65bdd2d1aa1)
-* Soon I will upload a video of it in action.
 
 At which point I was more then satisfied and concluded the project. Initially this might seem very simple but if you want to see the machine code
 look at LC-3-Verilog-Implementation\RTL_synthesizable_code\Programs\CompleteHelloWorld file. I could write more programs that do more 
